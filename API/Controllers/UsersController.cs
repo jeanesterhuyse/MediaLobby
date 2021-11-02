@@ -29,8 +29,6 @@ namespace API.Controllers
         public ActionResult<AppUser> GetUser(int id)
         {
             return this.context.Users.Find(id);
-            
-            
         }
     
     }
