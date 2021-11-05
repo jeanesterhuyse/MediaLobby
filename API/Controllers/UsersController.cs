@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -16,14 +17,16 @@ namespace API.Controllers
             this.context=context;
         }
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult<IEnumerable<AppUser>> GetUsers()
         {
             var users=this.context.Users.ToList();
 
             return users;
         }
-
-         [HttpGet("{id}")]
+        
+        [Authorize]
+        [HttpGet("{id}")]
         public ActionResult<AppUser> GetUser(int id)
         {
             return this.context.Users.Find(id);
