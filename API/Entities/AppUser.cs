@@ -12,5 +12,6 @@ namespace API.Entities
         public string UserEmail { get; set; }
         public byte[] UserPasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
+        public ICollection<Photo> Photos {get; set;}
     }
 }
