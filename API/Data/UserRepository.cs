@@ -1,7 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using API.DTOs;
 using API.Entities;
 using API.Interfaces;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
@@ -9,9 +13,12 @@ namespace API.Data
     public class UserRepository : IUserRepository
     {
         private readonly DataContext context;
-        public UserRepository(DataContext context)
+        private readonly IMapper mapper;
+
+        public UserRepository(DataContext context, IMapper mapper)
         {
             this.context = context;
+            this.mapper = mapper;
         }
 
         public async Task<AppUser> GetUserByIdAsync(int id)
@@ -21,7 +28,9 @@ namespace API.Data
 
         public async Task<AppUser> GetUserByEmailAsync(string email)
         {
-           return await this.context.Users.Include(p => p.Photos).SingleOrDefaultAsync(x => x.UserEmail == email);
+            return await this.context.Users
+            .Include(p => p.Photos)
+            .SingleOrDefaultAsync(x => x.UserEmail == email);
         }
 
         public async Task<IEnumerable<AppUser>> GetUsersAsync()
@@ -31,12 +40,27 @@ namespace API.Data
 
         public async Task<bool> SaveAllAsync()
         {
-           return await this.context.SaveChangesAsync()>0;
+            return await this.context.SaveChangesAsync() > 0;
         }
 
         public void Update(AppUser user)
         {
-            this.context.Entry(user).State=EntityState.Modified;        
+            this.context.Entry(user).State = EntityState.Modified;
+        }
+
+        public async Task<IEnumerable<MemberDto>> GetMembersAsync()
+        {
+            return await this.context.Users
+            .ProjectTo<MemberDto>(this.mapper.ConfigurationProvider)
+            .ToListAsync();
+        }
+
+        public async Task<MemberDto> GetMemberAsync(string email)
+        {
+            return await this.context.Users
+                .Where(x => x.UserEmail == email)
+                .ProjectTo<MemberDto>(this.mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
         }
     }
 
