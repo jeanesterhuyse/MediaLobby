@@ -2,7 +2,7 @@ namespace API.DTOs
 {
     public class LoginDto
     {
-        public string Useremail { get; set; }
+        public string UserEmail { get; set; }
         public string Password { get; set; }
     }
 }
