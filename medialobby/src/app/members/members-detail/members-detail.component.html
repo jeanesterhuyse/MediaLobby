@@ -1,1 +1,29 @@
-<p>members-detail works!</p>
+<div class="row" *ngIf="member">
+    <div class="col-4">
+        <div class="card">
+        <img src="{{member.photoUrl || './assets/user.png'}}" class="card-img-top img-thumbnail">    
+            <div class="card-body">
+                <div>
+                    <strong>Name:</strong>
+                    <p>{{member.userName}}</p>
+                </div>
+                <div>
+                    <strong>Email:</strong>
+                    <p>{{member.userEmail}}</p>
+                </div>
+            </div>
+         <div class="card-footer">
+             <div class="btn-group d-flex">
+                 <button class="btn btn-primary">Add as friend</button>
+            </div>
+            </div>
+            </div>
+        </div>
+        <div class="col-8">
+            <tabset class="member-tabset">
+                <tab heading='Profile photos'>
+                    <p>Photos will go here</p>
+                    </tab>
+                </tabset>
+        </div>
+</div>

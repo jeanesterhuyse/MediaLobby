@@ -21,16 +21,31 @@ namespace API.Data
             this.mapper = mapper;
         }
 
+         public async Task<IEnumerable<MemberDto>> GetMembersAsync()
+        {
+            return await this.context.Users
+            .ProjectTo<MemberDto>(this.mapper.ConfigurationProvider)
+            .ToListAsync();
+        }
+
+        public async Task<MemberDto> GetMemberAsync(string UserEmail)
+        {
+            return await this.context.Users
+                .Where(x => x.UserEmail == UserEmail)
+                .ProjectTo<MemberDto>(this.mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+        }
+
         public async Task<AppUser> GetUserByIdAsync(int id)
         {
             return await this.context.Users.FindAsync(id);
         }
 
-        public async Task<AppUser> GetUserByEmailAsync(string email)
+        public async Task<AppUser> GetUserByUserEmailAsync(string UserEmail)
         {
             return await this.context.Users
             .Include(p => p.Photos)
-            .SingleOrDefaultAsync(x => x.UserEmail == email);
+            .SingleOrDefaultAsync(x => x.UserEmail == UserEmail);
         }
 
         public async Task<IEnumerable<AppUser>> GetUsersAsync()
@@ -48,20 +63,7 @@ namespace API.Data
             this.context.Entry(user).State = EntityState.Modified;
         }
 
-        public async Task<IEnumerable<MemberDto>> GetMembersAsync()
-        {
-            return await this.context.Users
-            .ProjectTo<MemberDto>(this.mapper.ConfigurationProvider)
-            .ToListAsync();
-        }
-
-        public async Task<MemberDto> GetMemberAsync(string email)
-        {
-            return await this.context.Users
-                .Where(x => x.UserEmail == email)
-                .ProjectTo<MemberDto>(this.mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
-        }
+       
     }
 
 }

@@ -30,12 +30,11 @@ namespace API.Controllers
             return Ok(users);
         }
 
-        [HttpGet("{useremail}")]
-        public async Task<ActionResult<MemberDto>> GetUser(string email)
+
+        [HttpGet("{UserEmail}")]
+        public async Task<ActionResult<MemberDto>> GetUser(string UserEmail)
         {
-            return await this.userRepository.GetMemberAsync(email);
-
-
+            return await this.userRepository.GetMemberAsync(UserEmail);
         }
 
     }

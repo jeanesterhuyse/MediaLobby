@@ -9,7 +9,7 @@ import { MembersService } from 'src/app/_services/members.service';
 })
 export class MembersListComponent implements OnInit {
   members: Member[];
-  constructor(private memberService:MembersService) { }
+  constructor(private memberService: MembersService) { }
 
   ngOnInit(): void {
     this.loadMembers();

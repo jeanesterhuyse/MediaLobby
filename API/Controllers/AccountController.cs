@@ -24,7 +24,7 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
 
-            if (await UserExist(registerDto.Useremail)) return BadRequest("UserEmail is taken");
+            if (await UserExist(registerDto.UserEmail)) return BadRequest("UserEmail is taken");
 
 
             using var hmac = new HMACSHA512();
@@ -32,7 +32,7 @@ namespace API.Controllers
             var user = new AppUser
             {
                 UserName = registerDto.Username,
-                UserEmail = registerDto.Useremail.ToLower(),
+                UserEmail = registerDto.UserEmail.ToLower(),
                 UserPasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Userpassword)),
                 PasswordSalt = hmac.Key
             };
@@ -42,7 +42,7 @@ namespace API.Controllers
 
             return new UserDto
             {
-                Useremail = user.UserEmail,
+                UserEmail = user.UserEmail,
                 Token = this.tokenService.CreateToken(user)
             };
         }
@@ -51,7 +51,7 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             var user = await this.context.Users
-                .SingleOrDefaultAsync(x => x.UserEmail == loginDto.Useremail);
+                .SingleOrDefaultAsync(x => x.UserEmail == loginDto.UserEmail);
 
             if (user == null) return Unauthorized("Invalid userEmail");
 
@@ -66,14 +66,14 @@ namespace API.Controllers
             
             return new UserDto
             {
-                Useremail = user.UserEmail,
+                UserEmail = user.UserEmail,
                 Token = this.tokenService.CreateToken(user)
             };
         }
 
-        private async Task<bool> UserExist(string useremail)
+        private async Task<bool> UserExist(string UserEmail)
         {
-            return await this.context.Users.AnyAsync(x => x.UserEmail == useremail.ToLower());
+            return await this.context.Users.AnyAsync(x => x.UserEmail == UserEmail.ToLower());
         }
 
 
