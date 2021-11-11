@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 using API.Data;
 using API.DTOs;
 using API.Entities;
@@ -51,7 +52,8 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             var user = await this.context.Users
-                .SingleOrDefaultAsync(x => x.userEmail == loginDto.userEmail);
+            .Include(p => p.photos)
+            .SingleOrDefaultAsync(x => x.userEmail == loginDto.userEmail.ToLower());
 
             if (user == null) return Unauthorized("Invalid userEmail");
 
@@ -67,7 +69,8 @@ namespace API.Controllers
             return new UserDto
             {
                 userEmail = user.userEmail,
-                token = this.tokenService.CreateToken(user)
+                token = this.tokenService.CreateToken(user),
+                photoUrl = user.photos.FirstOrDefault(x=>x.isMain)?.url
             };
         }
 

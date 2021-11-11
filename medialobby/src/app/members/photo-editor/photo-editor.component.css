@@ -1,0 +1,9 @@
+img.img-thumbnail{
+    height: 98px;
+    width: 98px;
+    margin-bottom: 4px;
+
+}
+input[type=file]{
+    color: transparent;
+}
