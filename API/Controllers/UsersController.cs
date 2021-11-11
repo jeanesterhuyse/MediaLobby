@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
 using API.Entities;
+using API.Extensions;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -19,20 +21,22 @@ namespace API.Controllers
     {
         private readonly IMapper mapper;
         private readonly IUserRepository userRepository;
-        public UsersController(IUserRepository userRepository, IMapper mapper)
+        private readonly IPhotoService photoService;
+        public UsersController(IUserRepository userRepository, IMapper mapper, IPhotoService photoService)
         {
+            this.photoService = photoService;
             this.mapper = mapper;
             this.userRepository = userRepository;
         }
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
         {
-            var users =await this.userRepository.GetMembersAsync();
+            var users = await this.userRepository.GetMembersAsync();
             return Ok(users);
         }
 
 
-        [HttpGet("{UserEmail}")]
+        [HttpGet("{UserEmail}", Name  = "GetUser")]
         public async Task<ActionResult<MemberDto>> GetUser(string UserEmail)
         {
             return await this.userRepository.GetMemberAsync(UserEmail);
@@ -41,14 +45,37 @@ namespace API.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
         {
-            var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var user = await this.userRepository.GetUserByUserEmailAsync(userEmail);
-            this.mapper.Map(memberUpdateDto,user);
+
+            var user = await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
+            this.mapper.Map(memberUpdateDto, user);
             this.userRepository.Update(user);
             if (await this.userRepository.SaveAllAsync()) return NoContent();
-            
+
             return BadRequest("Could not update user");
         }
+        [HttpPost("add-photo")]
+        public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
+        {
+            var user = await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
+            var result = await this.photoService.AddPhotoAsync(file);
+            if(result.Error !=null) return BadRequest(result.Error.Message);
+            var photo= new Photo{
+                url = result.SecureUrl.AbsoluteUri,
+                publicId = result.PublicId
+            };
+            if(user.photos.Count==0){
+                photo.isMain=true;
+            }
+            user.photos.Add(photo);
+            if(await this.userRepository.SaveAllAsync())
+            {
+                return CreatedAtRoute("GetUser", new{userEmail = user.userEmail}, this.mapper.Map<PhotoDto>(photo));
+                
+            }
+                
+            return BadRequest("Error with adding photo");
+            
+        } 
 
     }
 }
