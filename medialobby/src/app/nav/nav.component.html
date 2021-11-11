@@ -15,7 +15,7 @@
                 </li>
             </ng-container>
         </ul>
-<div class="dropdown" *ngIf=" accountService.currentUser$|async" dropdown>
+<div class="dropdown" *ngIf="(accountService.currentUser$ | async) as user" dropdown>
     <a class="dropdown-toggle text-light" dropdownToggle>Settings for {{user.userEmail}}</a>
     <div class="dropdown-menu" *dropdownMenu>
         <a routerLink='/member/edit' class="dropdown-item">Edit Profile</a>

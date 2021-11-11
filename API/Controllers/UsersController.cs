@@ -94,5 +94,19 @@ namespace API.Controllers
             return BadRequest("Could not set it as profile picture");
         }
 
+        [HttpDelete("delete-photo/{photoId}")]
+        public async Task<ActionResult> DeletePhoto(int photoId){
+            var user=await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
+            var photo=user.photos.FirstOrDefault(x=>x.id==photoId);
+            if(photo==null) return NotFound();
+            if(photo.isMain) return BadRequest("You cant delete your profile picture");
+            if(photo.publicId != null) {
+                var result=await this.photoService.DeletePhotoAsync(photo.publicId);
+                if(result.Error != null) return BadRequest(result.Error.Message);
+            }
+            user.photos.Remove(photo);
+            if(await this.userRepository.SaveAllAsync()) return Ok();
+            return BadRequest("Could not delete the photo");
+        }
     }
 }
