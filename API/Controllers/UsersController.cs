@@ -76,6 +76,23 @@ namespace API.Controllers
             return BadRequest("Error with adding photo");
             
         } 
+         [HttpPut("set-main-photo/{photoId}")]
+        public async Task<ActionResult> SetMainPhoto(int photoId)
+        {
+            var user = await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
+
+            var photo = user.photos.FirstOrDefault(x => x.id == photoId);
+
+            if (photo.isMain) return BadRequest("This picture is already your profile picture");
+
+            var currentMain = user.photos.FirstOrDefault(x => x.isMain);
+            if (currentMain != null) currentMain.isMain = false;
+            photo.isMain = true;
+
+            if (await this.userRepository.SaveAllAsync()) return NoContent();
+
+            return BadRequest("Could not set it as profile picture");
+        }
 
     }
 }
