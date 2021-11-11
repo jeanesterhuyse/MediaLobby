@@ -28,10 +28,10 @@ namespace API.Data
             .ToListAsync();
         }
 
-        public async Task<MemberDto> GetMemberAsync(string UserEmail)
+        public async Task<MemberDto> GetMemberAsync(string userEmail)
         {
             return await this.context.Users
-                .Where(x => x.UserEmail == UserEmail)
+                .Where(x => x.userEmail == userEmail)
                 .ProjectTo<MemberDto>(this.mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
@@ -41,16 +41,16 @@ namespace API.Data
             return await this.context.Users.FindAsync(id);
         }
 
-        public async Task<AppUser> GetUserByUserEmailAsync(string UserEmail)
+        public async Task<AppUser> GetUserByUserEmailAsync(string userEmail)
         {
             return await this.context.Users
-            .Include(p => p.Photos)
-            .SingleOrDefaultAsync(x => x.UserEmail == UserEmail);
+            .Include(p => p.photos)
+            .SingleOrDefaultAsync(x => x.userEmail == userEmail);
         }
 
         public async Task<IEnumerable<AppUser>> GetUsersAsync()
         {
-            return await this.context.Users.Include(p => p.Photos).ToListAsync();
+            return await this.context.Users.Include(p => p.photos).ToListAsync();
         }
 
         public async Task<bool> SaveAllAsync()

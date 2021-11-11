@@ -4,11 +4,11 @@ namespace API.DTOs
 {
     public class MemberDto
     {
-        public int Id { get; set; }
-        public string UserName  { get; set; }
-        public string UserEmail { get; set; }
-        public ICollection<PhotoDto> Photos {get; set;}
-        public string PhotoUrl { get; set; }
+        public int id { get; set; }
+        public string userName  { get; set; }
+        public string userEmail { get; set; }
+        public ICollection<PhotoDto> photos {get; set;}
+        public string photoUrl { get; set; }
 
     }
 }

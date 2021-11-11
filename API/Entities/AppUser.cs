@@ -7,11 +7,11 @@ namespace API.Entities
 {
     public class AppUser
     {
-        public int Id { get; set; }
-        public string UserName  { get; set; }
-        public string UserEmail { get; set; }
-        public byte[] UserPasswordHash { get; set; }
-        public byte[] PasswordSalt { get; set; }
-        public ICollection<Photo> Photos {get; set;}
+        public int id { get; set; }
+        public string userName  { get; set; }
+        public string userEmail { get; set; }
+        public byte[] userPasswordHash { get; set; }
+        public byte[] passwordSalt { get; set; }
+        public ICollection<Photo> photos {get; set;}
     }
 }

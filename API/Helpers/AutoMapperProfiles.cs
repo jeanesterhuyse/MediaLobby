@@ -1,8 +1,8 @@
+
 using System.Linq;
 using API.DTOs;
 using API.Entities;
 using AutoMapper;
-
 namespace API.Helpers
 {
     public class AutoMapperProfiles : Profile
@@ -10,9 +10,10 @@ namespace API.Helpers
         public AutoMapperProfiles()
         {
             CreateMap<AppUser, MemberDto>()
-                .ForMember(dest=>dest.PhotoUrl,opt=>opt.MapFrom(src=>src.Photos
-                .FirstOrDefault(x=>x.IsMain).Url));
+                .ForMember(dest=>dest.photoUrl,opt=>opt.MapFrom(src=>src.photos
+                .FirstOrDefault(x=>x.isMain).url));
             CreateMap<Photo, PhotoDto>();
+            CreateMap<MemberUpdateDto,AppUser>();
         }
     }
 }
