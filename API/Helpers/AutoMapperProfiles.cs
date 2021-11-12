@@ -14,6 +14,7 @@ namespace API.Helpers
                 .FirstOrDefault(x=>x.isMain).url));
             CreateMap<Photo, PhotoDto>();
             CreateMap<MemberUpdateDto,AppUser>();
+            CreateMap<RegisterDto,AppUser>();
         }
     }
 }

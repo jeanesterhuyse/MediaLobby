@@ -8,6 +8,7 @@ using API.Entities;
 using API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace API.Controllers
 {
@@ -15,10 +16,14 @@ namespace API.Controllers
     {
         private readonly DataContext context;
         private readonly ITokenService tokenService;
-        public AccountController(DataContext context, ITokenService tokenService)
+        private readonly IMapper mapper;
+
+        public AccountController(DataContext context, ITokenService tokenService,IMapper mapper)
         {
             this.tokenService = tokenService;
+            this.mapper = mapper;
             this.context = context;
+            this.mapper = mapper;
         }
 
         [HttpPost("register")]
@@ -26,18 +31,15 @@ namespace API.Controllers
         {
 
             if (await UserExist(registerDto.userEmail)) return BadRequest("UserEmail is taken");
-
+            var user=this.mapper.Map<AppUser>(registerDto);
 
             using var hmac = new HMACSHA512();
 
-            var user = new AppUser
-            {
-                userName = registerDto.username,
-                userEmail = registerDto.userEmail.ToLower(),
-                userPasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.userpassword)),
-                passwordSalt = hmac.Key
-            };
-
+              
+                user.userEmail = registerDto.userEmail.ToLower();
+                user.userPasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.userPassword));
+                user.passwordSalt = hmac.Key;
+         
             this.context.Users.Add(user);
             await this.context.SaveChangesAsync();
 

@@ -5,12 +5,12 @@ namespace API.DTOs
     public class RegisterDto
     {
         [Required]
-        public string username { get; set; }
+        public string userName { get; set; }
 
         [Required]
         public string userEmail { get; set; }
         
         [Required]
-        public string userpassword { get; set; }
+        public string userPassword { get; set; }
     }
 }

@@ -1,27 +1,18 @@
-<form [formGroup]='registerForm' (ngSubmit)="register()" autocomplete="off">
+<form [formGroup]='registerForm' (ngSubmit)="registerForm.valid && register()" autocomplete="off">
     <h2 class="text-center text-primary">Sign up</h2>
     <hr>
-    <div class="form-group">
-        <input 
-        type="text" class="form-control" formControlName='userName' 
-        placeholder="Your name">
-    </div>
-    <div class="form-group">
-        <input type="email" class="form-control" formControlName='userEmail' placeholder="Your email">
-    </div>
-    <div class="form-group">
-        <input type="password" class="form-control" formControlName='password'  placeholder="Your password">
-    </div>
-
-    <div class="form-group">
-        <input type="password" class="form-control" formControlName='confirmPassword'  placeholder="Confirm your password">
-    </div>
     
+    <app-text-input [formControl]='registerForm.controls["userEmail"]' 
+        [label]='"userEmail"'></app-text-input>
+    <app-text-input [formControl]='registerForm.controls["userName"]' 
+        [label]='"userName"'></app-text-input>
+    <app-text-input [formControl]='registerForm.controls["userPassword"]' 
+        [label]='"Password"' [type]='"password"'></app-text-input>
+    <app-text-input [formControl]='registerForm.controls["confirmPassword"]' 
+        [label]='"Confirm Password"' 
+        [type]='"password"'></app-text-input>
     <div class="form-group text-center">
-<button class="btn btn-success mr-2" type="submit">Register</button>
-<button class="btn btn-default mr-2" (click)="cancel()" type="button">Cancel</button>
+        <button [disabled]='!registerForm.valid'class="btn btn-success mr-2" type="submit">Register</button>
+        <button class="btn btn-default mr-2" (click)="cancel()" type="button">Cancel</button>
     </div>
 </form>
-
-<p>Form value: {{registerForm.value | json}} </p>
-<p>Form status: {{registerForm.status | json}} </p>
