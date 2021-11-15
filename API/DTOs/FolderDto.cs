@@ -6,6 +6,7 @@ namespace API.DTOs
     {
         public int id { get; set; }
         public string folderName { get; set; }
+        public int appUserId { get; set; }
         public ICollection<PhotoDto> photos {get; set;}
     }
 }

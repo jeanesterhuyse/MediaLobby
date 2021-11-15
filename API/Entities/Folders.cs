@@ -8,6 +8,8 @@ namespace API.Entities
     {
         public int id { get; set; }
         public string folderName { get; set; }
+         public int appUserId { get; set; }
+        public AppUser appUser {get; set; }
         public ICollection<Photo> photos {get; set;}
 
     }
