@@ -108,5 +108,6 @@ namespace API.Controllers
             if(await this.userRepository.SaveAllAsync()) return Ok();
             return BadRequest("Could not delete the photo");
         }
-    }
+  
+}
 }
