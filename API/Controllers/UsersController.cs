@@ -32,10 +32,10 @@ namespace API.Controllers
             this.context = context;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
+        public async Task<MemberDto[]> GetUsers()
         {
             var users = await this.userRepository.GetMembersAsync();
-            return Ok(users);
+            return this.mapper.Map<MemberDto[]>(users);
         }
 
 

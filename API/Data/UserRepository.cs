@@ -50,7 +50,8 @@ namespace API.Data
 
         public async Task<IEnumerable<AppUser>> GetUsersAsync()
         {
-            return await this.context.Users.Include(p => p.photos).ToListAsync();
+            return await this.context.Users.Include(p => p.photos)
+            .Include(f=>f.folders).ToListAsync();
         }
 
         public async Task<bool> SaveAllAsync()
