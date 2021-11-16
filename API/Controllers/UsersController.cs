@@ -19,14 +19,17 @@ namespace API.Controllers
     [Authorize]
     public class UsersController : BaseApiController
     {
+        private readonly DataContext context;
         private readonly IMapper mapper;
         private readonly IUserRepository userRepository;
         private readonly IPhotoService photoService;
-        public UsersController(IUserRepository userRepository, IMapper mapper, IPhotoService photoService)
+        private readonly IFolderRepository folderRepository;
+        public UsersController(IUserRepository userRepository, IMapper mapper, IPhotoService photoService, DataContext context)
         {
             this.photoService = photoService;
             this.mapper = mapper;
             this.userRepository = userRepository;
+            this.context = context;
         }
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
@@ -108,6 +111,20 @@ namespace API.Controllers
             if(await this.userRepository.SaveAllAsync()) return Ok();
             return BadRequest("Could not delete the photo");
         }
-  
-}
+
+        [HttpPost("create-folder")]
+        public async Task<ActionResult<Folders>> CreateFolderAsync(FolderDto folderDto)
+        {
+            var user=await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
+            var folder=this.mapper.Map<Folders>(folderDto);
+
+            folder.folderName=folderDto.folderName;
+
+            this.context.Folders.Add(folder);
+            await this.context.SaveChangesAsync();
+            this.userRepository.SaveAllAsync();
+              
+            return folder;
+        }
+    }
 }

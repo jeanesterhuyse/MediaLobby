@@ -22,9 +22,12 @@
         <div class="col-8" >
             <tabset class="member-tabset">
                 <tab heading = 'Photo Folders' >
-                    *ngFor="let photo of NewFolderDto.folderName"
-                    <i class="bi bi-file-image" ></i>
+                    <div>Click on folders to display photos</div>
+                    <ul>             
+                        <li *ngFor="let folder of folders">{{folder}}</li>
+                    </ul>
                 </tab>
+                   
                 <!-- <tab heading='Profile photos'>
                     <ngx-gallery [options]="galleryOptions" [images]="galleryImages" 
                         style="display: inline-block; margin-bottom: 20px;"></ngx-gallery>

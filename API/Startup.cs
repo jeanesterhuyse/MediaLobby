@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using API.Data;
 using API.Extensions;
@@ -36,9 +37,12 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddApplicationServices(this.config);
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);;
             services.AddCors();
             services.AddIdentityService(this.config);
+        
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

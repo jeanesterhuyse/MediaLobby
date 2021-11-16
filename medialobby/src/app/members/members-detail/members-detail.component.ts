@@ -4,6 +4,17 @@ import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from '@kolkov
 import { Member } from 'src/app/_models/member';
 import { MembersService } from 'src/app/_services/members.service';
 
+function get_folders(folder : Object)
+{
+  var array = folder["$values"];
+  const folders = []
+  for(let i = 0 ; i < array.length ; i++)
+  {
+      folders.push(array[i].folderName);
+  }
+  return folders;
+}
+
 @Component({
   selector: 'app-members-detail',
   templateUrl: './members-detail.component.html',
@@ -11,6 +22,7 @@ import { MembersService } from 'src/app/_services/members.service';
 })
 export class MembersDetailComponent implements OnInit {
   member: Member;
+  folders: string[];
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
 
@@ -35,20 +47,23 @@ export class MembersDetailComponent implements OnInit {
   getImages(): NgxGalleryImage[]{
     const imageUrls =[];
 
-  for (const photo of this.member.photos) {
-    imageUrls.push({
-      small: photo?.url,
-      medium: photo?.url,
-      big: photo?.url
-    })
+    for (const photo of this.member.photos) {
+      imageUrls.push({
+        small: photo?.url,
+        medium: photo?.url,
+        big: photo?.url
+      })
+    }
+    return imageUrls;
   }
-  return imageUrls;
-  }
+
+
 
   loadMember(){
     this.memberService.getMember(this.route.snapshot.paramMap.get('userEmail')).subscribe(member => {
       this.member = member;
-      this.galleryImages = this.getImages();
+      //this.galleryImages = this.getImages();
+      this.folders = get_folders(this.member.folders);
     })
   }
 
