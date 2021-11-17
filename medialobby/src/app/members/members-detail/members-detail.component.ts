@@ -7,13 +7,15 @@ import { MembersService } from 'src/app/_services/members.service';
 function get_folders(folder : Object)
 {
   var array = folder["$values"];
-  const folders = []
+  const folders = [];;
   for(let i = 0 ; i < array.length ; i++)
   {
-      folders.push(array[i].folderName);
+      folders.push(array[i]);
+      
   }
   return folders;
 }
+
 
 @Component({
   selector: 'app-members-detail',
@@ -22,7 +24,9 @@ function get_folders(folder : Object)
 })
 export class MembersDetailComponent implements OnInit {
   member: Member;
-  folders: string[];
+  email : string ;
+  folders_name: string[];
+  folders_id: string[];
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
 
@@ -62,8 +66,9 @@ export class MembersDetailComponent implements OnInit {
   loadMember(){
     this.memberService.getMember(this.route.snapshot.paramMap.get('userEmail')).subscribe(member => {
       this.member = member;
+      this.email = member.userEmail;
       //this.galleryImages = this.getImages();
-      this.folders = get_folders(this.member.folders);
+      this.folders_name = get_folders(this.member.folders);
     })
   }
 
