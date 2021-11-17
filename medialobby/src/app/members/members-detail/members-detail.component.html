@@ -23,7 +23,9 @@
             <tabset class="member-tabset">
                 <tab heading = 'Photo Folders' >
                     <div>Click on folders to display photos</div>
-                    <ul>             
+                    <ul> 
+                        <i class="bi bi-folder" style="font-size:24px;" ></i>
+                        <!-- <button type="button" onclick="alert('You pressed the button!')">test</button>             -->
                         <li *ngFor="let folder of folders">{{folder}}</li>
                     </ul>
                 </tab>

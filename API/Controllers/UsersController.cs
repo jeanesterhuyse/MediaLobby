@@ -38,7 +38,6 @@ namespace API.Controllers
             return this.mapper.Map<MemberDto[]>(users);
         }
 
-
         [HttpGet("{UserEmail}", Name  = "GetUser")]
         public async Task<ActionResult<MemberDto>> GetUser(string UserEmail)
         {
