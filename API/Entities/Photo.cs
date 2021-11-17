@@ -7,6 +7,7 @@ namespace API.Entities
     {
         public int id { get; set; }
         public string url { get; set; }
+        public int foldersId { get; set; }
         public bool isMain { get; set; }
         public string publicId { get; set; }
         public AppUser appUser {get; set; }

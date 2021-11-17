@@ -63,7 +63,8 @@ namespace API.Controllers
             if(result.Error !=null) return BadRequest(result.Error.Message);
             var photo= new Photo{
                 url = result.SecureUrl.AbsoluteUri,
-                publicId = result.PublicId
+                publicId = result.PublicId,
+                
             };
             if(user.photos.Count==0){
                 photo.isMain=true;
@@ -118,6 +119,7 @@ namespace API.Controllers
             var folder=this.mapper.Map<Folders>(folderDto);
 
             folder.folderName=folderDto.folderName;
+        
 
             this.context.Folders.Add(folder);
             await this.context.SaveChangesAsync();

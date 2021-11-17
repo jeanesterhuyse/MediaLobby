@@ -7,7 +7,7 @@ import { MembersService } from 'src/app/_services/members.service';
 function get_folders(folder : Object)
 {
   var array = folder["$values"];
-  const folders = [];;
+  const folders = [];
   for(let i = 0 ; i < array.length ; i++)
   {
       folders.push(array[i]);
