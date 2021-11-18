@@ -79,7 +79,7 @@ namespace API.Controllers
             return BadRequest("Error with adding photo");
             
         } 
-         [HttpPut("set-main-photo/{photoId}")]
+        [HttpPut("set-main-photo/{photoId}")]
         public async Task<ActionResult> SetMainPhoto(int photoId)
         {
             var user = await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
@@ -95,6 +95,17 @@ namespace API.Controllers
             if (await this.userRepository.SaveAllAsync()) return NoContent();
 
             return BadRequest("Could not set it as profile picture");
+        }
+
+        [HttpPut("set-foldersId/{photoId}/{foldersId}")]
+        public async Task<ActionResult> SetFoldersId(int photoId, int foldersId)
+        {
+            var user = await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
+            var photo = user.photos.FirstOrDefault(x => x.id == photoId);
+            photo.foldersId =foldersId;
+            this.userRepository.SaveAllAsync();
+            return NoContent();
+
         }
 
         [HttpDelete("delete-photo/{photoId}")]

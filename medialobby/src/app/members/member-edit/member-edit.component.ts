@@ -7,6 +7,18 @@ import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
 import { MembersService } from 'src/app/_services/members.service';
 
+function get_folders(folder : Object)
+{
+  var array = folder["$values"];
+  const folders = [];
+  for(let i = 0 ; i < array.length ; i++)
+  {
+      folders.push(array[i]);
+      
+  }
+  return folders;
+}
+
 @Component({
   selector: 'app-member-edit',
   templateUrl: './member-edit.component.html',
@@ -16,6 +28,7 @@ export class MemberEditComponent implements OnInit {
   @ViewChild('editForm') editForm: NgForm;
   member: Member;
   user: User;
+  user_folders = [];
 
   constructor(private accountService: AccountService, private membersService: MembersService, 
     private toastr: ToastrService) { 
@@ -28,7 +41,7 @@ export class MemberEditComponent implements OnInit {
   loadMember(){
       this.membersService.getMember(this.user.userEmail).subscribe(member => {
         this.member = member;
-
+        this.user_folders = get_folders(this.member.folders);
     });
   }
 
@@ -36,6 +49,7 @@ export class MemberEditComponent implements OnInit {
     this.membersService.updateMember(this.member).subscribe(()=> {
       this.toastr.success('Your profile has been updated successfully');
       this.editForm.reset(this.member);
+      
     })
    
 }

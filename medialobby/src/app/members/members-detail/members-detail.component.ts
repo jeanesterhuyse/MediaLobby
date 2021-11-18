@@ -48,18 +48,6 @@ export class MembersDetailComponent implements OnInit {
     
   }
 
-  // getImages(): NgxGalleryImage[]{
-  //   const imageUrls =[];
-
-  //   for (const photo of this.member.photos) {
-  //     imageUrls.push({
-  //       small: photo?.url,
-  //       medium: photo?.url,
-  //       big: photo?.url
-  //     })
-  //   }
-  //   return imageUrls;
-  // }
 
 
 
@@ -67,7 +55,6 @@ export class MembersDetailComponent implements OnInit {
     this.memberService.getMember(this.route.snapshot.paramMap.get('userEmail')).subscribe(member => {
       this.member = member;
       this.email = member.userEmail;
-      //this.galleryImages = this.getImages();
       this.folders_name = get_folders(this.member.folders);
     })
   }

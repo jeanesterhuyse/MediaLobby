@@ -9,6 +9,20 @@ import { AccountService } from 'src/app/_services/account.service';
 import { MembersService } from 'src/app/_services/members.service';
 import { environment } from 'src/environments/environment';
 
+
+
+function get_folders(folder : Object)
+{
+  var array = folder["$values"];
+  const folders = [];
+  for(let i = 0 ; i < array.length ; i++)
+  {
+      folders.push(array[i]);
+      
+  }
+  return folders;
+}
+
 @Component({
   selector: 'app-photo-editor',
   templateUrl: './photo-editor.component.html',
@@ -19,21 +33,35 @@ export class PhotoEditorComponent implements OnInit {
 uploader: FileUploader;
 hasBaseDropzoneOver= false;
 baseUrl= environment.apiUrl;
+photo_id : number ;
 user: User;
+user_folders = [];
+images=[];
+selected_folder_id : number ;
 
   constructor(private accountService: AccountService, private memberService: MembersService) { 
     this.accountService.currentUser$.pipe(take(1)).subscribe(user=> this.user=user);
   }
 
   ngOnInit(): void {
+    this.images=this.getImages();
+    this.user_folders = get_folders(this.member.folders);
+    console.log(this.member)
     this.initializeUploader();
   }
+
+  select_change_handler(event: any)
+  {
+    this.selected_folder_id = event.target.value;
+    console.log("Folder id from event: " + this.selected_folder_id);
+  }
+
   setMainPhoto(photo: Photo){
-this.memberService.setMainPhoto(photo.id).subscribe(()=>{
+  this.memberService.setMainPhoto(photo.id).subscribe(()=>{
   this.user.photoUrl=photo.url;
   this.accountService.setCurrentUser(this.user);
   this.member.photoUrl=photo.url;
-  this.member.photos.forEach(p=>{
+  this.member.photos["$values"].forEach(p=>{
     if(p.isMain) p.isMain=false;
     if(p.id===photo.id) p.isMain=true;
   })
@@ -42,16 +70,34 @@ this.memberService.setMainPhoto(photo.id).subscribe(()=>{
 
   deletePhoto(photoId: number){
     this.memberService.deletePhoto(photoId).subscribe(()=>{
-      this.member.photos=this.member.photos.filter(x=>x.id !== photoId);
+      this.member.photos=this.member.photos["$values"].filter(x=>x.id !== photoId);
     })
   }
+
+  UpdatePhoto(){
+    this.memberService.UpdatePhoto(this.photo_id,this.selected_folder_id);
+  }
+
+  set_photo_id(id : number)
+  {
+    this.photo_id = id ;
+    console.log(this.photo_id);
+  }
   
-  fileOverBase(e: any){
-this.hasBaseDropzoneOver=e;
+  fileOverBase(Any: any){
+this.hasBaseDropzoneOver=Any;
+  }
+
+  getImages(){
+     const images = [];
+     for (const photo of this.member.photos["$values"]) {
+     images.push(photo)
+  }
+  return images;
   }
 
   initializeUploader(){
-    this.uploader=new FileUploader({
+this.uploader=new FileUploader({
 url:this.baseUrl+'users/add-photo',
 authToken: 'Bearer '+this.user.token,
 isHTML5:true,

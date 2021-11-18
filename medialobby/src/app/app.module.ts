@@ -19,6 +19,7 @@ import { MemberEditComponent } from './members/member-edit/member-edit.component
 import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
 import { TextInputComponent } from './_forms/text-input/text-input.component';
 import { MemberFoldersComponent } from './members/member-folders/member-folders.component';
+import { AboutComponent } from './about/about.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { MemberFoldersComponent } from './members/member-folders/member-folders.
     MemberEditComponent,
     PhotoEditorComponent,
     TextInputComponent,
-    MemberFoldersComponent
+    MemberFoldersComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,

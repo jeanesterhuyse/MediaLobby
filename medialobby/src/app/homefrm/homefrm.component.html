@@ -4,13 +4,12 @@
         <p class="lead">Sign up to involve your friends in your journey!</p>
         <div class="text-center">
         <button (click)="registerToggle()" class="btn btn-primary btn-lg mr-3">Register</button>
-        <button class="btn btn-info btn-lg">Learn more</button>
+        <button class="btn btn-info btn-lg" routerLink="/about">Learn more</button>
         </div>
     </div>
     <div *ngIf="registerMode" class="container">
         <div class="row justify-content-center">
             <div class="col-4">
-
               <app-register  (cancelRegister)="cancelRegisterMode($event)"></app-register>
             </div>
         </div>
