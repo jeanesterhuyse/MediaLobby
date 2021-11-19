@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { CoreEnvironment } from '@angular/compiler/src/compiler_facade_interface';
 import { Component, Input, OnInit } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
@@ -39,7 +40,8 @@ user_folders = [];
 images=[];
 selected_folder_id : number ;
 
-  constructor(private accountService: AccountService, private memberService: MembersService) { 
+
+  constructor(private accountService: AccountService, private memberService: MembersService, private http: HttpClient) { 
     this.accountService.currentUser$.pipe(take(1)).subscribe(user=> this.user=user);
   }
 
@@ -52,7 +54,7 @@ selected_folder_id : number ;
 
   select_change_handler(event: any)
   {
-    this.selected_folder_id = event.target.value;
+    this.selected_folder_id = Number(event.target.value);
     console.log("Folder id from event: " + this.selected_folder_id);
   }
 
@@ -75,7 +77,8 @@ selected_folder_id : number ;
   }
 
   UpdatePhoto(){
-    this.memberService.UpdatePhoto(this.photo_id,this.selected_folder_id);
+    console.log(this.photo_id,this.selected_folder_id);
+    this.http.put(this.baseUrl+'users/set-foldersId/'+this.photo_id+'/'+this.selected_folder_id,{})
   }
 
   set_photo_id(id : number)

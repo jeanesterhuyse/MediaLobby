@@ -41,9 +41,9 @@
             <tab heading='Add folder'>
                 <form #editForm="ngForm" id="editForm" (ngSubmit)="updateMember()">
                     <h4>Folder name: </h4>
-                    <textarea class="form-control" name="folderName" rows="6"></textarea>
+                    <textarea class="form-control" [(ngModel)]="create_folder_name" name="folderName" rows="6"></textarea>
                 </form>
-                <button class="btn btn-outline-primary" (click)="CreateFolder()" type="submit">Create new folder</button>
+                <button class="btn btn-outline-primary" (click)="create_folder()" type="submit">Create new folder</button>
             </tab>
             
         </tabset>

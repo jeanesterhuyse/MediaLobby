@@ -100,6 +100,7 @@ namespace API.Controllers
         [HttpPut("set-foldersId/{photoId}/{foldersId}")]
         public async Task<ActionResult> SetFoldersId(int photoId, int foldersId)
         {
+            Console.WriteLine("fddsf");
             var user = await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
             var photo = user.photos.FirstOrDefault(x => x.id == photoId);
             photo.foldersId =foldersId;
@@ -124,7 +125,7 @@ namespace API.Controllers
         }
 
         [HttpPost("create-folder")]
-        public async Task<ActionResult<Folders>> CreateFolderAsync(FolderDto folderDto)
+        public async Task<ActionResult<Folders>> CreateFolderAsync(NewFolderDto folderDto)
         {
             var user=await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
             var folder=this.mapper.Map<Folders>(folderDto);

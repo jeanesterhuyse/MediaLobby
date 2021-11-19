@@ -41,12 +41,13 @@ updateMember(member: Member){
     this.members[index]=member;
   })
 }
+
 setMainPhoto(photoId: number){
 return this.http.put(this.baseUrl+'users/set-main-photo/'+photoId,{})
 }
 
 UpdatePhoto(photoId: number,folders_id: number){
-  console.log(photoId,folders_id);
+console.log(photoId,folders_id)
 return this.http.put(this.baseUrl+'users/set-foldersId/'+photoId+'/'+folders_id,{})
 }
 
