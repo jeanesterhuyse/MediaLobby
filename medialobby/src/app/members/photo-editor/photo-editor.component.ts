@@ -78,7 +78,7 @@ selected_folder_id : number ;
 
   UpdatePhoto(){
     console.log(this.photo_id,this.selected_folder_id);
-    this.http.put(this.baseUrl+'users/set-foldersId/'+this.photo_id+'/'+this.selected_folder_id,{})
+    this.memberService.UpdatePhoto(this.photo_id,this.selected_folder_id)  
   }
 
   set_photo_id(id : number)
@@ -115,7 +115,7 @@ removeAfterUpload:true,
     this.uploader.onSuccessItem=(item,response,status,headers)=>{
       if (response) {
         const photo=JSON.parse(response);
-        this.member.photos.push(photo);
+        this.member.photos["$values"].push(photo);
         if(photo.isMain){
           this.user.photoUrl=photo.url;
           this.member.photoUrl=photo.url;

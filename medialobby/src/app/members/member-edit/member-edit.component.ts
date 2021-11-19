@@ -54,11 +54,8 @@ export class MemberEditComponent implements OnInit {
 
   create_folder()
   {
-    let myfolder: string = '[{"folderName":"'+this.create_folder_name+'"}]';
-    console.log(myfolder);
-    this.strIntoObj = JSON.parse(myfolder);
-    console.log(this.strIntoObj);
-    this.http.post(this.baseUrl + 'users/create-folder',this.strIntoObj );
+    console.log(this.create_folder_name);
+    this.membersService.CreateFolder(this.create_folder_name);
   }
 
   updateMember(){

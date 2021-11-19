@@ -64,6 +64,8 @@ namespace API.Controllers
             var photo= new Photo{
                 url = result.SecureUrl.AbsoluteUri,
                 publicId = result.PublicId,
+                foldersId=CreateFolderAsync("Unassigned photo").Id
+             
                 
             };
             if(user.photos.Count==0){
@@ -125,19 +127,39 @@ namespace API.Controllers
         }
 
         [HttpPost("create-folder")]
-        public async Task<ActionResult<Folders>> CreateFolderAsync(NewFolderDto folderDto)
+        public async Task<ActionResult<Folders>> CreateFolderAsync(string folderNameParam)
         {
+            Console.WriteLine(folderNameParam);
             var user=await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
-            var folder=this.mapper.Map<Folders>(folderDto);
-
-            folder.folderName=folderDto.folderName;
-        
-
+            var folder= new Folders{
+                folderName=folderNameParam,
+                appUserId=user.id
+                
+            };
             this.context.Folders.Add(folder);
             await this.context.SaveChangesAsync();
             this.userRepository.SaveAllAsync();
-              
             return folder;
         }
+        [HttpPost("create-metadata")]
+        public async Task<ActionResult<MetaData>> CreateMetaDataAsync(string mlocation,string mtags, string mdate,string mcapturedBy,int mphotoid)
+        {
+
+            var user=await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
+           var newmetaData= new MetaData{
+               location=mlocation,
+               tags=mtags,
+               date=mdate,
+               capturedBy=mcapturedBy,
+               photoid=mphotoid
+
+            };
+            this.context.MetaData.Add(newmetaData);
+            await this.context.SaveChangesAsync();
+            this.userRepository.SaveAllAsync();
+            return newmetaData;
+        }
     }
+
+    
 }

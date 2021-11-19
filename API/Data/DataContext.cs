@@ -13,6 +13,8 @@ namespace API.Data
         {
         }
         public DbSet<AppUser> Users { get; set; }
+        
         public DbSet<Folders> Folders { get; set; }
+        public DbSet<MetaData> MetaData { get; set; }
     }
 }

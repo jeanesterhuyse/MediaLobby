@@ -51,7 +51,13 @@ console.log(photoId,folders_id)
 return this.http.put(this.baseUrl+'users/set-foldersId/'+photoId+'/'+folders_id,{})
 }
 
+
 deletePhoto(photoId: number){
   return this.http.delete(this.baseUrl+'users/delete-photo/'+photoId)
+}
+
+CreateFolder(create_folder_name: string){
+  console.log(this.baseUrl);
+  this.http.post(this.baseUrl + 'users/create-folder/'+create_folder_name,{});
 }
 }

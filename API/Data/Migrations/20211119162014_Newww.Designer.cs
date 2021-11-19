@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20211115084143_UpdateFolder")]
-    partial class UpdateFolder
+    [Migration("20211119162014_Newww")]
+    partial class Newww
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -47,7 +47,7 @@ namespace API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("AppUserid")
+                    b.Property<int>("appUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("folderName")
@@ -55,9 +55,35 @@ namespace API.Data.Migrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("AppUserid");
+                    b.HasIndex("appUserId");
 
                     b.ToTable("Folders");
+                });
+
+            modelBuilder.Entity("API.Entities.MetaData", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("capturedBy")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("location")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("photoid")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("tags")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("id");
+
+                    b.ToTable("MetaData");
                 });
 
             modelBuilder.Entity("API.Entities.Photo", b =>
@@ -69,7 +95,7 @@ namespace API.Data.Migrations
                     b.Property<int>("AppUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("Foldersid")
+                    b.Property<int>("foldersId")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("isMain")
@@ -85,16 +111,20 @@ namespace API.Data.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.HasIndex("Foldersid");
+                    b.HasIndex("foldersId");
 
                     b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("API.Entities.Folders", b =>
                 {
-                    b.HasOne("API.Entities.AppUser", null)
+                    b.HasOne("API.Entities.AppUser", "appUser")
                         .WithMany("folders")
-                        .HasForeignKey("AppUserid");
+                        .HasForeignKey("appUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("appUser");
                 });
 
             modelBuilder.Entity("API.Entities.Photo", b =>
@@ -105,11 +135,15 @@ namespace API.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Entities.Folders", null)
+                    b.HasOne("API.Entities.Folders", "folder")
                         .WithMany("photos")
-                        .HasForeignKey("Foldersid");
+                        .HasForeignKey("foldersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("appUser");
+
+                    b.Navigation("folder");
                 });
 
             modelBuilder.Entity("API.Entities.AppUser", b =>

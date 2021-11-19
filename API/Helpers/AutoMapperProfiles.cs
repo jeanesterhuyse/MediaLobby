@@ -17,6 +17,8 @@ namespace API.Helpers
             CreateMap<RegisterDto,AppUser>();
             CreateMap<FolderDto,Folders>();
             CreateMap<Folders,FolderDto>();
+            CreateMap<MetaDataDto,MetaData>();
+            CreateMap<MetaData,MetaDataDto>();
         }
     }
 }
