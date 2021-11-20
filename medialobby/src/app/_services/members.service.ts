@@ -27,6 +27,9 @@ export class MembersService {
       })
     )
   }
+  deleteFolder(folder_Id: Number){
+    return this.http.delete(this.baseUrl+ 'users/delete-folder/'+folder_Id);
+  }
 
   getMember(userEmail: string) {
     const member=this.members.find(x=>x.userEmail===userEmail);
@@ -58,6 +61,21 @@ deletePhoto(photoId: number){
 
 CreateFolder(create_folder_name: string){
   console.log(this.baseUrl);
-  this.http.post(this.baseUrl + 'users/create-folder/'+create_folder_name,{});
+  return this.http.post(this.baseUrl + 'users/create-folder/'+create_folder_name,{});
+}
+
+GetLast(){
+ return this.http.get(this.baseUrl+'users/getlast');
+}
+
+updateMetaData(location: string,tags: string,date:string,capturedBy: string){
+  console.log(location+'/'+tags+'/'+capturedBy+'/'+this.GetLast());
+
+return this.http.post(this.baseUrl+'users/create-metadata/'+location+'/'+tags+'/'+capturedBy+'/'+this.GetLast(),{})
+}
+
+updateFolder(folderId:Number,name: string){
+  return this.http.put(this.baseUrl+'users/update-folder/'+folderId+'/'+name,{});
 }
 }
+

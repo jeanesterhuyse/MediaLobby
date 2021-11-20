@@ -24,7 +24,7 @@ namespace API.Controllers
         private readonly IUserRepository userRepository;
         private readonly IPhotoService photoService;
         private readonly IFolderRepository folderRepository;
-        public UsersController(IUserRepository userRepository, IMapper mapper, IPhotoService photoService, DataContext context)
+        public UsersController(IUserRepository userRepository,IFolderRepository folderRepository, IMapper mapper, IPhotoService photoService, DataContext context)
         {
             this.photoService = photoService;
             this.mapper = mapper;
@@ -55,6 +55,26 @@ namespace API.Controllers
 
             return BadRequest("Could not update user");
         }
+
+        [HttpPut("update-folder/{folderId}/{name}")]
+        public async Task<ActionResult> UpdateFolder(int folderId, string name)
+        {
+            var user = await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
+            var folder = user.folders.FirstOrDefault(x => x.id == folderId);
+            folder.folderName=name;
+            await this.userRepository.SaveAllAsync();
+           return Ok();
+        }
+
+        [HttpGet("getlast")]
+        public async Task<int> GetLast(){
+            var user = await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
+            var last=user.photos
+                       .OrderByDescending(p => p.id)
+                       .FirstOrDefault();
+                return last.id;
+        }
+
         [HttpPost("add-photo")]
         public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
         {
@@ -94,7 +114,7 @@ namespace API.Controllers
             if (currentMain != null) currentMain.isMain = false;
             photo.isMain = true;
 
-            if (await this.userRepository.SaveAllAsync()) return NoContent();
+            if (await this.userRepository.SaveAllAsync()) return Ok();
 
             return BadRequest("Could not set it as profile picture");
         }
@@ -106,7 +126,7 @@ namespace API.Controllers
             var user = await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
             var photo = user.photos.FirstOrDefault(x => x.id == photoId);
             photo.foldersId =foldersId;
-            this.userRepository.SaveAllAsync();
+            await this.userRepository.SaveAllAsync();
             return NoContent();
 
         }
@@ -126,7 +146,20 @@ namespace API.Controllers
             return BadRequest("Could not delete the photo");
         }
 
-        [HttpPost("create-folder")]
+        [HttpDelete("delete-folder/{folderId}")]
+        public async Task<ActionResult> DeleteFolder(int folderId){
+            var user=await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
+            var folder=user.folders.FirstOrDefault(x=>x.id==folderId);
+            foreach(var photo in folder.photos){
+            await DeletePhoto(photo.id);
+            }
+             user.folders.Remove(folder);
+            await this.userRepository.SaveAllAsync();
+            return Ok();
+
+        }
+
+        [HttpPost("create-folder/{folderNameParam}")]
         public async Task<ActionResult<Folders>> CreateFolderAsync(string folderNameParam)
         {
             Console.WriteLine(folderNameParam);
@@ -138,11 +171,11 @@ namespace API.Controllers
             };
             this.context.Folders.Add(folder);
             await this.context.SaveChangesAsync();
-            this.userRepository.SaveAllAsync();
+            await this.userRepository.SaveAllAsync();
             return folder;
         }
-        [HttpPost("create-metadata")]
-        public async Task<ActionResult<MetaData>> CreateMetaDataAsync(string mlocation,string mtags, string mdate,string mcapturedBy,int mphotoid)
+        [HttpPost("create-metadata/{mlocation}/{mtags}/{mdate}/{mcapturedBy}/{mphotoid}")]
+        public async Task<ActionResult<MetaData>> CreateMetaDataAsync(string mlocation,string mtags, string mdate,string mcapturedBy)
         {
 
             var user=await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
@@ -151,12 +184,14 @@ namespace API.Controllers
                tags=mtags,
                date=mdate,
                capturedBy=mcapturedBy,
-               photoid=mphotoid
+               photoid=Convert.ToInt32(user.photos
+                       .OrderByDescending(p => p.id)
+                       .FirstOrDefault().id)
 
             };
             this.context.MetaData.Add(newmetaData);
             await this.context.SaveChangesAsync();
-            this.userRepository.SaveAllAsync();
+            await this.userRepository.SaveAllAsync();
             return newmetaData;
         }
     }

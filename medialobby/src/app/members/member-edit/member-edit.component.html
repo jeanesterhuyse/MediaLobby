@@ -45,6 +45,32 @@
                 </form>
                 <button class="btn btn-outline-primary" (click)="create_folder()" type="submit">Create new folder</button>
             </tab>
+
+            <tab heading='Update folder'>
+                <form #editForm="ngForm" id="updateFolder" (ngSubmit)="updateMember()">
+                    <div>Choose folder
+                        <select class="form-select" aria-label="Default select example" (change)="select_change_handler($event)"> 
+                            <option *ngFor="let folder of user_folders" value={{folder.id}}>{{folder.folderName}}</option>
+                        </select>
+                    </div>
+                    <h4>New folder name: </h4>
+                    <textarea class="form-control" [(ngModel)]="update_folder_name" name="folderName" rows="6"></textarea>
+                </form>
+                <button class="btn btn-outline-primary" (click)="updateFolder()" type="submit">Update folder</button>
+            </tab>
+            <tab heading='Delete folder'>
+                <form #editForm="ngForm" id="deleteFolder" (ngSubmit)="updateMember()">
+                    <div>Choose folder
+                        <select class="form-select" aria-label="Default select example" (change)="select_change_handler($event)"> 
+                            <option *ngFor="let folder of user_folders" value={{folder.id}}>{{folder.folderName}}</option>
+                        </select>
+                        </div>
+                    </form>
+                
+                        <button (click)="(deleteFolder())"
+            class="btn  btn-sm btn-danger" (click)="deleteFolder()" type="submit"><i class="fa fa-trash" style="size: 100%"></i>Click here to delete this folder</button>
+        </tab>
+                    
             
         </tabset>
     </div>

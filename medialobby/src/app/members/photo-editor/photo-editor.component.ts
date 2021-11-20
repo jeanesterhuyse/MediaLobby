@@ -9,6 +9,7 @@ import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
 import { MembersService } from 'src/app/_services/members.service';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
 
 
 
@@ -39,9 +40,13 @@ user: User;
 user_folders = [];
 images=[];
 selected_folder_id : number ;
+location: string;
+tags: string;
+date: string;
+capturedBy: string;
 
 
-  constructor(private accountService: AccountService, private memberService: MembersService, private http: HttpClient) { 
+  constructor(private router: Router,private accountService: AccountService, private memberService: MembersService, private http: HttpClient) { 
     this.accountService.currentUser$.pipe(take(1)).subscribe(user=> this.user=user);
   }
 
@@ -50,6 +55,7 @@ selected_folder_id : number ;
     this.user_folders = get_folders(this.member.folders);
     console.log(this.member)
     this.initializeUploader();
+    
   }
 
   select_change_handler(event: any)
@@ -73,13 +79,19 @@ selected_folder_id : number ;
   deletePhoto(photoId: number){
     this.memberService.deletePhoto(photoId).subscribe(()=>{
       this.member.photos=this.member.photos["$values"].filter(x=>x.id !== photoId);
+      window.location.reload();
     })
   }
 
   UpdatePhoto(){
     console.log(this.photo_id,this.selected_folder_id);
-    this.memberService.UpdatePhoto(this.photo_id,this.selected_folder_id)  
-  }
+    this.memberService.UpdatePhoto(this.photo_id,this.selected_folder_id) 
+    .subscribe(()=>{
+      this.member.photos=this.member.photos["$values"].filter(x=>x.id !== this.photo_id);
+      window.location.reload();
+  })
+}
+
 
   set_photo_id(id : number)
   {
@@ -98,6 +110,18 @@ this.hasBaseDropzoneOver=Any;
   }
   return images;
   }
+  getLastId(){
+    return this.memberService.GetLast();
+  }
+  updateMetaData(){
+   console.log(this.location,this.tags,this.date,this.capturedBy);
+  
+    this.memberService.updateMetaData(this.location,this.tags,this.date,this.capturedBy).subscribe(response => {
+      this.router.navigateByUrl('/members');
+  })
+}
+
+  
 
   initializeUploader(){
 this.uploader=new FileUploader({
@@ -108,6 +132,7 @@ allowedFileType:['image'],
 autoUpload:false,
 removeAfterUpload:true,
 
+
     });
     this.uploader.onAfterAddingFile=(file)=>{
       file.withCredentials=false;
@@ -116,11 +141,15 @@ removeAfterUpload:true,
       if (response) {
         const photo=JSON.parse(response);
         this.member.photos["$values"].push(photo);
+        
         if(photo.isMain){
           this.user.photoUrl=photo.url;
           this.member.photoUrl=photo.url;
           this.accountService.setCurrentUser(this.user);
+          
         }
+        this.updateMetaData();
+        window.location.reload();
       }
     }
   }
