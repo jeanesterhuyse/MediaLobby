@@ -86,16 +86,16 @@ export class MemberEditComponent implements OnInit {
     })
    
   }
-  updateFolder(){
-  this.membersService.getFolder(this.selected_folder_id).subscribe(folder => {
-    this.folder = folder;
-  });
-  this.membersService.updateFolder(this.folder) 
-    .subscribe(()=> {
-    this.toastr.success('Your profile has been updated successfully');
-    window.location.reload();
-})
-}
+//   updateFolder(){
+//   this.membersService.getFolder(this.selected_folder_id).subscribe(folder => {
+//     this.folder = folder;
+//   });
+//   this.membersService.updateFolder(this.folder) 
+//     .subscribe(()=> {
+//     this.toastr.success('Your profile has been updated successfully');
+//     window.location.reload();
+// })
+// }
 
 deleteFolder(){
   this.membersService.deleteFolder(this.selected_folder_id).subscribe(()=> {
