@@ -23,6 +23,7 @@ namespace API.Controllers
         private readonly IMapper mapper;
         private readonly IUserRepository userRepository;
         private readonly IPhotoService photoService;
+        private int newFolderId;
         public UsersController(IUserRepository userRepository, IMapper mapper, IPhotoService photoService, DataContext context)
         {
             this.photoService = photoService;
@@ -79,11 +80,12 @@ namespace API.Controllers
         {
             var user = await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
             var result = await this.photoService.AddPhotoAsync(file);
+            CreateFolderAsync("Unassigned photo");
             if(result.Error !=null) return BadRequest(result.Error.Message);
             var photo= new Photo{
                 url = result.SecureUrl.AbsoluteUri,
                 publicId = result.PublicId,
-                foldersId=CreateFolderAsync("Unassigned photo").Id
+                foldersId==this.newFolderId
              
                 
             };
@@ -171,6 +173,7 @@ namespace API.Controllers
             this.context.Folders.Add(folder);
             await this.context.SaveChangesAsync();
             await this.userRepository.SaveAllAsync();
+            this.newFolderId=folder.id;
             return folder;
         }
         [HttpPost("create-metadata/{mlocation}/{mtags}/{mdate}/{mcapturedBy}/{mphotoid}")]
