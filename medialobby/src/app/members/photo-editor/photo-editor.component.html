@@ -1,15 +1,23 @@
 <div class="row">
-    <div class="col-2" *ngFor="let photo of member.photos">
+    <div class="col-2" *ngFor="let photo of images">
         <img src="{{photo.url}}" alt="{{photo.url}}" class="img-thumbnail p-1">
         <div class="text-center">
             <button [disabled]="photo.isMain" (click)="setMainPhoto(photo)" [ngClass]='photo.isMain ? "btn-success active":"btn-outline-success"'
-            class="btn btn-sm">
-            Profile photo</button>
+            class="btn btn-sm">Profile photo</button> 
+            <button class="btn btn-sm" style="background-color: #f0f3f1;" (click)="set_photo_id(photo.id)">Move to folder</button>
             <button [disabled]="photo.isMain" (click)="deletePhoto(photo.id)"
             class="btn  btn-sm btn-danger"><i class="fa fa-trash"></i></button>
         </div>
     </div>
+    <div>Choose folder
+        <select class="form-select" aria-label="Default select example" (change)="select_change_handler($event)"> 
+            <option *ngFor="let folder of user_folders" value={{folder.id}}>{{folder.folderName}}</option>
+        </select>
+    </div>
+    <button class="btn btn-outline-primary" style="width: 30%; margin:5px;" (click)="UpdatePhoto()" type="submit">Move to selected folder</button>
 </div>
+
+
 
 <div class="row mt-4">
  
@@ -26,17 +34,14 @@
             Drop your photos here
         </div>
 
-        Multiple
-        <input type="file" ng2FileSelect [uploader]="uploader" multiple  /><br/>
 
-        Single
+        Select your photo to upload:
         <input type="file" ng2FileSelect [uploader]="uploader" />
     </div>
 
     <div class="col-md-9" style="margin-bottom: 40px" *ngIf="uploader?.queue?.length">
 
-        <h3>Upload queue</h3>
-        <p>Queue length: {{ uploader?.queue?.length }}</p>
+        <h3>Photo to upload:</h3>
 
         <table class="table">
             <thead>
@@ -49,7 +54,7 @@
             <tbody>
             <tr *ngFor="let item of uploader.queue">
                 <td><strong>{{ item?.file?.name }}</strong></td>
-                <td *ngIf="uploader.options.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+                <td *ngIf="uploader.options.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} mb</td>
             </tr>
             </tbody>
         </table>
@@ -57,7 +62,8 @@
         <div>
             <div>
                 Queue progress:
-                <div class="progress" style="">
+                Upload may take a while depending on the size of you photo
+                <div class="progress">
                     <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
                 </div>
             </div>
@@ -65,16 +71,23 @@
                     (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
                 <span class="fa fa-upload"></span> Upload all
             </button>
-            <button type="button" class="btn btn-warning btn-s"
-                    (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
-                <span class="fa fa-ban"></span> Cancel all
-            </button>
             <button type="button" class="btn btn-danger btn-s"
                     (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
                 <span class="fa fa-trash"></span> Remove all
             </button>
         </div>
+    
 
     </div>
+    <form #editForm="ngForm" id="metaForm">
+        <h4>Enter location of photo</h4>
+        <textarea class="form-control" [(ngModel)]="location"  name="location" rows="6"></textarea>
+        <h4>Who was with you?</h4>
+        <textarea class="form-control" [(ngModel)]="tags"  name="tags" rows="6"></textarea>
+        <h4>Enter date of photo</h4>
+        <textarea class="form-control" [(ngModel)]="date" name="date" rows="6"></textarea>
+        <h4>Who captured the photo?</h4>
+        <textarea class="form-control" [(ngModel)]="capturedBy"  name="capturedBy" rows="6"></textarea>
+    </form>
 
 </div>

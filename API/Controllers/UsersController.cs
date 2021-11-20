@@ -19,27 +19,40 @@ namespace API.Controllers
     [Authorize]
     public class UsersController : BaseApiController
     {
+        private readonly DataContext context;
         private readonly IMapper mapper;
         private readonly IUserRepository userRepository;
         private readonly IPhotoService photoService;
-        public UsersController(IUserRepository userRepository, IMapper mapper, IPhotoService photoService)
+        private readonly IFolderRepository folderRepository;
+        private int newFolderId;
+        private int FolderWorkingWith;
+        public UsersController(IUserRepository userRepository, IMapper mapper, IPhotoService photoService, DataContext context)
         {
             this.photoService = photoService;
             this.mapper = mapper;
             this.userRepository = userRepository;
-        }
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
-        {
-            var users = await this.userRepository.GetMembersAsync();
-            return Ok(users);
+            this.context = context;
+           
         }
 
+        [HttpGet]
+        public async Task<MemberDto[]> GetUsers()
+        {
+            var users = await this.userRepository.GetMembersAsync();
+            return this.mapper.Map<MemberDto[]>(users);
+        }
 
         [HttpGet("{UserEmail}", Name  = "GetUser")]
         public async Task<ActionResult<MemberDto>> GetUser(string UserEmail)
         {
             return await this.userRepository.GetMemberAsync(UserEmail);
+        }
+
+        [HttpGet("get-folder/{id}")]
+        public async Task<ActionResult<FolderDto>> GetFolder(int id)
+        {
+            FolderWorkingWith=id;
+            return await this.userRepository.GetFolder(id);
         }
 
         [HttpPut]
@@ -53,15 +66,30 @@ namespace API.Controllers
 
             return BadRequest("Could not update user");
         }
+
+        [HttpPut]
+        public async Task<ActionResult> UpdateFolder(FolderUpdate folderupdate)
+        {
+            // var folder = await this.userRepository.GetFolder(FolderWorkingWith);
+            // this.mapper.Map(folderupdate, folder);
+            // this.userRepository.UpdateFolder(folder);
+            // if (await this.userRepository.SaveAllAsync()) return NoContent();
+
+            return BadRequest("Could not update user");
+        }
+
+
         [HttpPost("add-photo")]
         public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
         {
             var user = await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
             var result = await this.photoService.AddPhotoAsync(file);
+            await CreateFolderAsync("Unassigned photo");
             if(result.Error !=null) return BadRequest(result.Error.Message);
             var photo= new Photo{
                 url = result.SecureUrl.AbsoluteUri,
-                publicId = result.PublicId
+                publicId = result.PublicId,
+                foldersId=this.newFolderId
             };
             if(user.photos.Count==0){
                 photo.isMain=true;
@@ -76,7 +104,8 @@ namespace API.Controllers
             return BadRequest("Error with adding photo");
             
         } 
-         [HttpPut("set-main-photo/{photoId}")]
+
+        [HttpPut("set-main-photo/{photoId}")]
         public async Task<ActionResult> SetMainPhoto(int photoId)
         {
             var user = await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
@@ -89,9 +118,21 @@ namespace API.Controllers
             if (currentMain != null) currentMain.isMain = false;
             photo.isMain = true;
 
-            if (await this.userRepository.SaveAllAsync()) return NoContent();
+            if (await this.userRepository.SaveAllAsync()) return Ok();
 
             return BadRequest("Could not set it as profile picture");
+        }
+
+        [HttpPut("set-foldersId/{photoId}/{foldersId}")]
+        public async Task<ActionResult> SetFoldersId(int photoId, int foldersId)
+        {
+            Console.WriteLine("fddsf");
+            var user = await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
+            var photo = user.photos.FirstOrDefault(x => x.id == photoId);
+            photo.foldersId =foldersId;
+            await this.userRepository.SaveAllAsync();
+            return NoContent();
+
         }
 
         [HttpDelete("delete-photo/{photoId}")]
@@ -108,5 +149,56 @@ namespace API.Controllers
             if(await this.userRepository.SaveAllAsync()) return Ok();
             return BadRequest("Could not delete the photo");
         }
+
+        [HttpDelete("delete-folder/{folderId}")]
+        public async Task<ActionResult> DeleteFolder(int folderId){
+            var user=await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
+            var folder=user.folders.FirstOrDefault(x=>x.id==folderId);
+            foreach(var photo in folder.photos){
+            await DeletePhoto(photo.id);
+            }
+            user.folders.Remove(folder);
+            await this.userRepository.SaveAllAsync();
+            return Ok();
+
+        }
+
+        [HttpPost("create-folder/{folderNameParam}")]
+        public async Task<ActionResult<Folders>> CreateFolderAsync(string folderNameParam)
+        {
+            var user=await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
+            var folder= new Folders{
+                folderName=folderNameParam,
+                appUserId=user.id
+                
+            };
+            this.context.Folders.Add(folder);
+            await this.context.SaveChangesAsync();
+            await this.userRepository.SaveAllAsync();
+            this.newFolderId=folder.id;
+            return folder;
+        }
+
+        [HttpPost("create-metadata/{mlocation}/{mtags}/{mdate}/{mcapturedBy}/{mphotoid}")]
+        public async Task<ActionResult<MetaData>> CreateMetaDataAsync(string mlocation,string mtags, string mdate,string mcapturedBy, int mphotoid)
+        {
+
+            var user=await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
+            var newmetaData= new MetaData{
+               photoid=mphotoid,
+               location=mlocation,
+               tags=mtags,
+               date=mdate,
+               capturedBy=mcapturedBy
+               
+
+            };
+            this.context.MetaData.Add(newmetaData);
+            await this.context.SaveChangesAsync();
+            await this.userRepository.SaveAllAsync();
+            return newmetaData;
+        }
     }
+
+    
 }

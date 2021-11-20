@@ -14,6 +14,11 @@ namespace API.Helpers
                 .FirstOrDefault(x=>x.isMain).url));
             CreateMap<Photo, PhotoDto>();
             CreateMap<MemberUpdateDto,AppUser>();
+            CreateMap<RegisterDto,AppUser>();
+            CreateMap<FolderDto,Folders>();
+            CreateMap<Folders,FolderDto>();
+            CreateMap<MetaDataDto,MetaData>();
+            CreateMap<MetaData,MetaDataDto>();
         }
     }
 }

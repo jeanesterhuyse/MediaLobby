@@ -4,6 +4,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace API.Data.Migrations
 {
@@ -14,54 +15,121 @@ namespace API.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.4");
+                .HasAnnotation("Relational:MaxIdentifierLength", 63)
+                .HasAnnotation("ProductVersion", "5.0.4")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
             modelBuilder.Entity("API.Entities.AppUser", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<byte[]>("passwordSalt")
-                        .HasColumnType("BLOB");
+                        .HasColumnType("bytea");
 
                     b.Property<string>("userEmail")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("userName")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<byte[]>("userPasswordHash")
-                        .HasColumnType("BLOB");
+                        .HasColumnType("bytea");
 
                     b.HasKey("id");
 
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("API.Entities.Folders", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("appUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("folderName")
+                        .HasColumnType("text");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("appUserId");
+
+                    b.ToTable("Folders");
+                });
+
+            modelBuilder.Entity("API.Entities.MetaData", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("capturedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("date")
+                        .HasColumnType("text");
+
+                    b.Property<string>("location")
+                        .HasColumnType("text");
+
+                    b.Property<int>("photoid")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("tags")
+                        .HasColumnType("text");
+
+                    b.HasKey("id");
+
+                    b.ToTable("MetaData");
+                });
+
             modelBuilder.Entity("API.Entities.Photo", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<int>("AppUserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
+
+                    b.Property<int>("foldersId")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("isMain")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("publicId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("url")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("id");
 
                     b.HasIndex("AppUserId");
 
+                    b.HasIndex("foldersId");
+
                     b.ToTable("Photos");
+                });
+
+            modelBuilder.Entity("API.Entities.Folders", b =>
+                {
+                    b.HasOne("API.Entities.AppUser", "appUser")
+                        .WithMany("folders")
+                        .HasForeignKey("appUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("appUser");
                 });
 
             modelBuilder.Entity("API.Entities.Photo", b =>
@@ -72,10 +140,25 @@ namespace API.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("API.Entities.Folders", "folder")
+                        .WithMany("photos")
+                        .HasForeignKey("foldersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("appUser");
+
+                    b.Navigation("folder");
                 });
 
             modelBuilder.Entity("API.Entities.AppUser", b =>
+                {
+                    b.Navigation("folders");
+
+                    b.Navigation("photos");
+                });
+
+            modelBuilder.Entity("API.Entities.Folders", b =>
                 {
                     b.Navigation("photos");
                 });
