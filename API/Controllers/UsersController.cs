@@ -75,17 +75,17 @@ namespace API.Controllers
                 return last.id;
         }
 
-        [HttpPost("add-photo")]
+         [HttpPost("add-photo")]
         public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
         {
             var user = await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
             var result = await this.photoService.AddPhotoAsync(file);
-            CreateFolderAsync("Unassigned photo");
+            await CreateFolderAsync("Unassigned photo");
             if(result.Error !=null) return BadRequest(result.Error.Message);
             var photo= new Photo{
                 url = result.SecureUrl.AbsoluteUri,
                 publicId = result.PublicId,
-                foldersId=this.newFolderId 
+                foldersId=this.newFolderId
             };
             if(user.photos.Count==0){
                 photo.isMain=true;
@@ -100,6 +100,7 @@ namespace API.Controllers
             return BadRequest("Error with adding photo");
             
         } 
+        
         [HttpPut("set-main-photo/{photoId}")]
         public async Task<ActionResult> SetMainPhoto(int photoId)
         {
