@@ -57,15 +57,13 @@ export class MemberFoldersComponent implements OnInit {
     }
     return imageUrls;
   }
-
   loadMember(){
     this.route.paramMap.subscribe(params => {    
-      this.folder_id =params.get("id"); 
+      this.folder_id = params.get("id"); 
     });
     this.memberService.getMember(this.route.snapshot.paramMap.get('userEmail')).subscribe(member => {
       this.member = member;
-      this.galleryImages = this.getImages(this.folder_id); 
-      
+      this.galleryImages = this.getImages(this.folder_id);  
     });
     
   }
