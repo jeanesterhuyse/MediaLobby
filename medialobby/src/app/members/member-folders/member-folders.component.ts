@@ -45,7 +45,7 @@ export class MemberFoldersComponent implements OnInit {
     const imageUrls = [];
     console.log(folder_id);
     for (const photo of this.member.photos["$values"]) {
-      if(Number(photo.folderId) == Number(folder_id))
+      if(photo.folderId == folder_id)
       {
         imageUrls.push({
           small: photo?.url,
