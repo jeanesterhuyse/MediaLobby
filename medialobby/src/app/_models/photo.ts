@@ -1,6 +1,6 @@
 export interface Photo {
     id: number;
-    folderId: number;
+    foldersId: number;
     url: string;
     isMain: boolean;
 }

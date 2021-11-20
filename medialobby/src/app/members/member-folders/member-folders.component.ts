@@ -7,6 +7,7 @@ import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions, NgxGalleryModu
 import { AccountService } from 'src/app/_services/account.service';
 import { User } from 'src/app/_models/user';
 import { take } from 'rxjs/operators';
+import { Photo } from 'src/app/_models/photo';
 
 @Component({
   selector: 'app-member-folders',
@@ -19,6 +20,7 @@ export class MemberFoldersComponent implements OnInit {
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
   user: User;
+  photo: Photo;
  
   constructor(private accountService: AccountService,private memberService: MembersService,  private route: ActivatedRoute) {
     this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user);
@@ -40,25 +42,30 @@ export class MemberFoldersComponent implements OnInit {
     ]
 
   }
+  // checkFolderID(folder_id:Number,photo: Photo){
+  //   if (photo.folderId=folder_id) 
+  //   return true;
+  //   else return false;
+  // }
 
   getImages(folder_id : Number): NgxGalleryImage[]{
     const imageUrls = [];
     console.log(folder_id);
-    for (const photo of this.member.photos["$values"]) {
-      if(Number(photo.folderId) == Number(folder_id))
-          console.log("")
-        else{
-          imageUrls.push({
-            small: photo?.url,
-            medium: photo?.url,
-            big: photo?.url
-          });
-        }
-
+    for ( this.photo of this.member.photos['$values']) {
+      console.log(this.photo.foldersId,folder_id);
+      if(this.photo.foldersId !== folder_id ){
+        imageUrls.push({
+        small: this.photo?.url,
+        medium: this.photo?.url,
+        big: this.photo?.url
+      });
       
     }
-    return imageUrls;
+    
   }
+  return imageUrls;
+  
+}
 
   loadMember(){
     this.route.paramMap.subscribe(params => {    

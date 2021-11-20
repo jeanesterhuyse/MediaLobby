@@ -4,6 +4,7 @@ import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Member } from '../_models/member';
+import { Folder } from '../_models/folder';
 import { AccountService } from './account.service';
 
 
@@ -14,6 +15,7 @@ export class MembersService {
 
   baseUrl = environment.apiUrl;
   members: Member[]=[];
+  folders: Folder[]=[];
 
 
   constructor(private http: HttpClient,  private accountService: AccountService) { }
@@ -31,11 +33,7 @@ export class MembersService {
     return this.http.delete(this.baseUrl+ 'users/delete-folder/'+folder_Id);
   }
 
-  getMember(userEmail: string) {
-    const member=this.members.find(x=>x.userEmail===userEmail);
-    if(member !== undefined) return of(member);
-    return this.http.get<Member>(this.baseUrl + 'users/' + userEmail);
-  }
+
 
 updateMember(member: Member){
   return this.http.put(this.baseUrl+'users',member);
@@ -68,14 +66,26 @@ GetLast(){
  return this.http.get(this.baseUrl+'users/getlast');
 }
 
-updateMetaData(location: string,tags: string,date:string,capturedBy: string){
+updateMetaData(location: string,tags: string,date:string,capturedBy: string,photoId:Number){
   console.log(location+'/'+tags+'/'+capturedBy+'/'+this.GetLast());
 
-return this.http.post(this.baseUrl+'users/create-metadata/'+location+'/'+tags+'/'+capturedBy+'/'+this.GetLast(),{})
+return this.http.post(this.baseUrl+'users/create-metadata/'+location+'/'+tags+'/'+capturedBy+'/'+photoId,{})
 }
 
-updateFolder(folderId:Number,name: string){
-  return this.http.put(this.baseUrl+'users/update-folder/'+folderId+'/'+name,{});
+updateFolder(folder:Folder){
+  //return this.http.put(this.baseUrl+'users/update-folder/'+folderId+'/'+name,{});
+  return this.http.put(this.baseUrl+'users',folder);
+}
+
+getMember(userEmail: string) {
+  const member=this.members.find(x=>x.userEmail===userEmail);
+  if(member !== undefined) return of(member);
+  return this.http.get<Member>(this.baseUrl + 'users/' + userEmail);
+}
+
+getFolder(id:Number){
+  const folder=this.folders.find(x=>x.id===id);
+    return this.http.get<Folder>(this.baseUrl + 'users/get-folder/' + id);
 }
 }
 
