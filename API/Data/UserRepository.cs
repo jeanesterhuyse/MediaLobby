@@ -6,7 +6,6 @@ using API.Entities;
 using API.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
@@ -22,12 +21,11 @@ namespace API.Data
             this.mapper = mapper;
         }
 
-
          public async Task<IEnumerable<MemberDto>> GetMembersAsync()
         {
             return await this.context.Users
-                .ProjectTo<MemberDto>(this.mapper.ConfigurationProvider)
-                .ToListAsync();
+            .ProjectTo<MemberDto>(this.mapper.ConfigurationProvider)
+            .ToListAsync();
         }
 
         public async Task<MemberDto> GetMemberAsync(string userEmail)
@@ -35,14 +33,6 @@ namespace API.Data
             return await this.context.Users
                 .Where(x => x.userEmail == userEmail)
                 .ProjectTo<MemberDto>(this.mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
-        }
-
-        public async Task<FolderDto> GetFolder(int id)
-        {
-            return await this.context.Folders
-                .Where(x => x.id == id)
-                .ProjectTo<FolderDto>(this.mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
 
@@ -54,14 +44,14 @@ namespace API.Data
         public async Task<AppUser> GetUserByUserEmailAsync(string userEmail)
         {
             return await this.context.Users
-                .Include(p => p.photos)
-                .SingleOrDefaultAsync(x => x.userEmail == userEmail);
+            .Include(p => p.photos)
+            .SingleOrDefaultAsync(x => x.userEmail == userEmail);
         }
 
         public async Task<IEnumerable<AppUser>> GetUsersAsync()
         {
             return await this.context.Users.Include(p => p.photos)
-                .Include(f=>f.folders).ToListAsync();
+            .Include(f=>f.folders).ToListAsync();
         }
 
         public async Task<bool> SaveAllAsync()
@@ -74,15 +64,7 @@ namespace API.Data
             this.context.Entry(user).State = EntityState.Modified;
         }
 
-        // public void UpdateFolder(Folders folder)
-        // {
-        //     this.context.Entry(folder).State = EntityState.Modified;
-        // }
-
-        public void UpdateFolder(Folders folder)
-        {
-            this.context.Entry(folder).State = EntityState.Modified;
-        }
+       
     }
 
 }
