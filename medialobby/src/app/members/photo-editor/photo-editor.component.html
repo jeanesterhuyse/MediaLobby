@@ -4,7 +4,7 @@
         <div class="text-center">
             <button [disabled]="photo.isMain" (click)="setMainPhoto(photo)" [ngClass]='photo.isMain ? "btn-success active":"btn-outline-success"'
             class="btn btn-sm">Profile photo</button> 
-            <button class="btn btn-sm" style="background-color: #f0f3f1;" (click)="set_photo_id(photo.id)">Move to folder</button>
+            <button class="btn btn-sm" style="background-color: #f0f3f1;" (click)="set_photo_id(photo.id)" >Move to folder</button>
             <button [disabled]="photo.isMain" (click)="deletePhoto(photo.id)"
             class="btn  btn-sm btn-danger"><i class="fa fa-trash"></i></button>
         </div>
