@@ -23,8 +23,7 @@ namespace API.Controllers
         private readonly IMapper mapper;
         private readonly IUserRepository userRepository;
         private readonly IPhotoService photoService;
-        private readonly IFolderRepository folderRepository;
-        public UsersController(IUserRepository userRepository,IFolderRepository folderRepository, IMapper mapper, IPhotoService photoService, DataContext context)
+        public UsersController(IUserRepository userRepository, IMapper mapper, IPhotoService photoService, DataContext context)
         {
             this.photoService = photoService;
             this.mapper = mapper;
