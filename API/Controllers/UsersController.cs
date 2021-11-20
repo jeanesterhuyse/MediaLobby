@@ -85,9 +85,7 @@ namespace API.Controllers
             var photo= new Photo{
                 url = result.SecureUrl.AbsoluteUri,
                 publicId = result.PublicId,
-                foldersId==this.newFolderId
-             
-                
+                foldersId=this.newFolderId 
             };
             if(user.photos.Count==0){
                 photo.isMain=true;
