@@ -113,13 +113,13 @@ this.hasBaseDropzoneOver=Any;
   getLastId(){
     return this.memberService.GetLast();
   }
-  updateMetaData(photoId:Number){
-   console.log(this.location,this.tags,this.date,this.capturedBy,photoId);
+  updateMetaData(){
+   console.log(this.location,this.tags,this.date,this.capturedBy);
   
-    this.memberService.updateMetaData(this.location,this.tags,this.date,this.capturedBy,photoId).subscribe(response => {
+    this.memberService.updateMetaData(this.location,this.tags,this.date,this.capturedBy).subscribe(response => {
       this.router.navigateByUrl('/members');
   })
-} 
+}
 
   
 
@@ -141,7 +141,6 @@ removeAfterUpload:true,
       if (response) {
         const photo=JSON.parse(response);
         this.member.photos["$values"].push(photo);
-        this.updateMetaData(photo.id);
         
         if(photo.isMain){
           this.user.photoUrl=photo.url;
@@ -149,7 +148,7 @@ removeAfterUpload:true,
           this.accountService.setCurrentUser(this.user);
           
         }
-       
+        this.updateMetaData();
         window.location.reload();
       }
     }

@@ -9,7 +9,6 @@ import { MembersService } from 'src/app/_services/members.service';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Folder } from 'src/app/_models/folder';
 
 function get_folders(folder : Object)
 {
@@ -40,7 +39,6 @@ export class MemberEditComponent implements OnInit {
   strIntoObj: any[];
   baseUrl= environment.apiUrl;
   selected_folder_id : number ;
-  folder: Folder;
 
   constructor(private router: Router,private accountService: AccountService, private membersService: MembersService, 
     private toastr: ToastrService, private http: HttpClient) { 
@@ -49,7 +47,6 @@ export class MemberEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadMember();
-    this.loadFolder();
   }
   loadMember(){
       this.membersService.getMember(this.user.userEmail).subscribe(member => {
@@ -57,17 +54,9 @@ export class MemberEditComponent implements OnInit {
         this.user_folders = get_folders(this.member.folders);
     });
   }
-
-  loadFolder(){
-    this.membersService.getFolder(1).subscribe(folder => {
-      this.folder = folder;
-  });
-}
-
   select_change_handler(event: any)
   {
     this.selected_folder_id = Number(event.target.value);
-
   }
 
   create_folder()
@@ -75,8 +64,8 @@ export class MemberEditComponent implements OnInit {
     console.log(this.create_folder_name);
     this.membersService.CreateFolder(this.create_folder_name).subscribe(response => {
       this.router.navigateByUrl('/members'),this.toastr.success('Your folder has been created');;
-    })
-  }
+  })
+}
 
   updateMember(){
     this.membersService.updateMember(this.member).subscribe(()=> {
@@ -85,17 +74,14 @@ export class MemberEditComponent implements OnInit {
       
     })
    
-  }
-//   updateFolder(){
-//   this.membersService.getFolder(this.selected_folder_id).subscribe(folder => {
-//     this.folder = folder;
-//   });
-//   this.membersService.updateFolder(this.folder) 
-//     .subscribe(()=> {
-//     this.toastr.success('Your profile has been updated successfully');
-//     window.location.reload();
-// })
-// }
+}
+updateFolder(){
+  this.membersService.updateFolder(this.selected_folder_id,this.update_folder_name) 
+  .subscribe(()=> {
+    this.toastr.success('Your profile has been updated successfully');
+    window.location.reload();
+})
+}
 
 deleteFolder(){
   this.membersService.deleteFolder(this.selected_folder_id).subscribe(()=> {
