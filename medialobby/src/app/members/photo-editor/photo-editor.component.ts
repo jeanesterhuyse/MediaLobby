@@ -148,7 +148,7 @@ removeAfterUpload:true,
           this.accountService.setCurrentUser(this.user);
           
         }
-        this.updateMetaData();
+        //this.updateMetaData();
         window.location.reload();
       }
     }
