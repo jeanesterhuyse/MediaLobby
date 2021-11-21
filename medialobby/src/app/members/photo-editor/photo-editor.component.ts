@@ -113,13 +113,14 @@ this.hasBaseDropzoneOver=Any;
   getLastId(){
     return this.memberService.GetLast();
   }
-  updateMetaData(){
-   console.log(this.location,this.tags,this.date,this.capturedBy);
-  
-    this.memberService.updateMetaData(this.location,this.tags,this.date,this.capturedBy).subscribe(response => {
-      this.router.navigateByUrl('/members');
-  })
-}
+  updateMetaData(photoId:Number){
+    console.log(this.location,this.tags,this.date,this.capturedBy,photoId);
+   
+     this.memberService.updateMetaData(this.location,this.tags,this.date,this.capturedBy,photoId).subscribe(response => {
+       this.router.navigateByUrl('/members');
+   })
+ } 
+ 
 
   
 

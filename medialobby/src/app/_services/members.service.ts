@@ -72,10 +72,10 @@ GetLast(){
  return this.http.get(this.baseUrl+'users/getlast');
 }
 
-updateMetaData(location: string,tags: string,date:string,capturedBy: string){
+updateMetaData(location: string,tags: string,date:string,capturedBy: string,photoId:Number){
   console.log(location+'/'+tags+'/'+capturedBy+'/'+this.GetLast());
 
-return this.http.post(this.baseUrl+'users/create-metadata/'+location+'/'+tags+'/'+capturedBy+'/'+this.GetLast(),{})
+return this.http.post(this.baseUrl+'users/create-metadata/'+location+'/'+tags+'/'+capturedBy+'/'+photoId,{})
 }
 
 updateFolder(folderId:Number,name: string){

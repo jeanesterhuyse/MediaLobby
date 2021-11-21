@@ -185,18 +185,16 @@ namespace API.Controllers
             return folder;
         }
         [HttpPost("create-metadata/{mlocation}/{mtags}/{mdate}/{mcapturedBy}/{mphotoid}")]
-        public async Task<ActionResult<MetaData>> CreateMetaDataAsync(string mlocation,string mtags, string mdate,string mcapturedBy)
+        public async Task<ActionResult<MetaData>> CreateMetaDataAsync(string mlocation,string mtags, string mdate,string mcapturedBy,int mphotoid)
         {
 
             var user=await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
-           var newmetaData= new MetaData{
+            var newmetaData= new MetaData{
                location=mlocation,
                tags=mtags,
                date=mdate,
                capturedBy=mcapturedBy,
-               photoid=Convert.ToInt32(user.photos
-                       .OrderByDescending(p => p.id)
-                       .FirstOrDefault().id)
+               photoid=mphotoid
 
             };
             this.context.MetaData.Add(newmetaData);
