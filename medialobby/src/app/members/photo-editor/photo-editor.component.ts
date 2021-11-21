@@ -145,8 +145,7 @@ removeAfterUpload:true,
         if(photo.isMain){
           this.user.photoUrl=photo.url;
           this.member.photoUrl=photo.url;
-          this.accountService.setCurrentUser(this.user);
-          
+          this.accountService.setCurrentUser(this.user);          
         }
         //this.updateMetaData();
         window.location.reload();
