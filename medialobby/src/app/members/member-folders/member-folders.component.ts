@@ -15,7 +15,7 @@ import { take } from 'rxjs/operators';
 })
 export class MemberFoldersComponent implements OnInit {
   member: Member;
-  folder_id : string;
+  folder_id : Number;
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
   user: User;
@@ -41,7 +41,7 @@ export class MemberFoldersComponent implements OnInit {
 
   }
 
-  getImages(folder_id : string): NgxGalleryImage[]{
+  getImages(folder_id : Number): NgxGalleryImage[]{
     const imageUrls = [];
     console.log(folder_id);
     for (const photo of this.member.photos["$values"]) {
@@ -59,7 +59,7 @@ export class MemberFoldersComponent implements OnInit {
   }
   loadMember(){
     this.route.paramMap.subscribe(params => {    
-      this.folder_id = params.get("id"); 
+      this.folder_id = Number(params.get("id")); 
       console.log(params);
     });
     this.memberService.getMember(this.route.snapshot.paramMap.get('userEmail')).subscribe(member => {
