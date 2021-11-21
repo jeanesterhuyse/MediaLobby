@@ -60,6 +60,7 @@ export class MemberFoldersComponent implements OnInit {
   loadMember(){
     this.route.paramMap.subscribe(params => {    
       this.folder_id = params.get("id"); 
+      console.log(params);
     });
     this.memberService.getMember(this.route.snapshot.paramMap.get('userEmail')).subscribe(member => {
       this.member = member;

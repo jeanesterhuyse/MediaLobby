@@ -1,6 +1,8 @@
 using System;
+
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Data;
@@ -37,6 +39,14 @@ namespace API.Controllers
             var users = await this.userRepository.GetMembersAsync();
             return this.mapper.Map<MemberDto[]>(users);
         }
+
+        [HttpGet("download/{url}")]
+        public async Task<ActionResult> download(String url){
+            WebClient client = new WebClient();
+            client.DownloadFileAsync(new Uri(url),@"c:\image.jpg");        
+            return Ok();
+        }
+       
 
         [HttpGet("{UserEmail}", Name  = "GetUser")]
         public async Task<ActionResult<MemberDto>> GetUser(string UserEmail)
@@ -100,7 +110,7 @@ namespace API.Controllers
             return BadRequest("Error with adding photo");
             
         } 
-        
+
         [HttpPut("set-main-photo/{photoId}")]
         public async Task<ActionResult> SetMainPhoto(int photoId)
         {

@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs/operators';
 import { Member } from 'src/app/_models/member';
+import { Photo } from 'src/app/_models/photo';
 import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
 import { MembersService } from 'src/app/_services/members.service';
@@ -34,6 +35,7 @@ export class MemberEditComponent implements OnInit {
   member: Member;
   user: User;
   user_folders = [];
+  images = [];
   create_folder_name : string;
   update_folder_name : string;
   strIntoObj: any[];
@@ -47,6 +49,7 @@ export class MemberEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadMember();
+    this.images=this.getImages();
   }
   loadMember(){
       this.membersService.getMember(this.user.userEmail).subscribe(member => {
@@ -63,8 +66,15 @@ export class MemberEditComponent implements OnInit {
   {
     console.log(this.create_folder_name);
     this.membersService.CreateFolder(this.create_folder_name).subscribe(response => {
-      this.router.navigateByUrl('/members'),this.toastr.success('Your folder has been created');;
+      this.router.navigateByUrl('/members'),this.toastr.success('Your folder has been created');
   })
+}
+getImages(){
+  const images = [];
+  for (const photo of this.member.photos["$values"]) {
+  images.push(photo)
+}
+return images;
 }
 
   updateMember(){
@@ -80,6 +90,12 @@ updateFolder(){
   .subscribe(()=> {
     this.toastr.success('Your profile has been updated successfully');
     window.location.reload();
+})
+}
+
+download(photo: Photo){
+  this.membersService.download(photo.url).subscribe(response => {
+    this.router.navigateByUrl('/members'),this.toastr.success('Your folder has been created');
 })
 }
 

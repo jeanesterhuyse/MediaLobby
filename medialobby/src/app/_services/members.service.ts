@@ -31,6 +31,10 @@ export class MembersService {
     return this.http.delete(this.baseUrl+ 'users/delete-folder/'+folder_Id);
   }
 
+  download(url:string){
+    return this.http.get(this.baseUrl+ 'users/download/'+url);
+  }
+
   getMember(userEmail: string) {
     const member=this.members.find(x=>x.userEmail===userEmail);
     if(member !== undefined) return of(member);
