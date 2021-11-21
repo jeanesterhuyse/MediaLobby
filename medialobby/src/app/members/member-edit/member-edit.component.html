@@ -58,6 +58,15 @@
                 </form>
                 <button class="btn btn-outline-primary" (click)="updateFolder()" type="submit">Update folder</button>
             </tab>
+            <tab heading='Download images'>
+                <form #edownloadForm="ngForm" id="download" (ngSubmit)="updateMember()">
+                     <div class="col-2" *ngFor="let photo of images">
+                        <img src="{{photo.url}}" alt="{{photo.url}}" class="img-thumbnail p-1">
+                        <button  (click)="download(photo)" 
+                            class="btn btn-sm">Download photo</button>
+                    </div>              
+                </form>   
+            </tab>
             <tab heading='Delete folder'>
                 <form #editForm="ngForm" id="deleteFolder" (ngSubmit)="updateMember()">
                     <div>Choose folder
@@ -71,15 +80,7 @@
             class="btn  btn-sm btn-danger" (click)="deleteFolder()" type="submit"><i class="fa fa-trash" style="size: 100%"></i>Click here to delete this folder</button>
         </tab>
 
-        <tab heading='Download images'>
-            <form #edownloadForm="ngForm" id="download" (ngSubmit)="updateMember()">
-                 <div class="col-2" *ngFor="let photo of images">
-                    <img src="{{photo.url}}" alt="{{photo.url}}" class="img-thumbnail p-1">
-                    <button  (click)="download(photo)" 
-                        class="btn btn-sm">Download photo</button>
-                </div>              
-            </form>   
-        </tab>
+
                     
             
         </tabset>
