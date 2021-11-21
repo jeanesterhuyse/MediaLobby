@@ -62,9 +62,12 @@ export class MemberFoldersComponent implements OnInit {
     this.route.paramMap.subscribe(params => {    
       this.folder_id = Number(params.get("id")); 
       console.log(params);
+      
     });
+
     this.memberService.getMember(this.route.snapshot.paramMap.get('userEmail')).subscribe(member => {
       this.member = member;
+      console.log(this.member.photos);
       this.galleryImages = this.getImages(this.folder_id);  
     });
     
