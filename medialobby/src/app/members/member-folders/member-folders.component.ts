@@ -44,6 +44,7 @@ export class MemberFoldersComponent implements OnInit {
   getImages(folder_id : Number): NgxGalleryImage[]{
     const imageUrls = [];
     console.log(folder_id);
+    console.log(this.member.photos["$values"]);
     for (const photo of this.member.photos["$values"]) {
       if(photo.foldersId == folder_id)
       {

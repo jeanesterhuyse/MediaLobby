@@ -25,12 +25,35 @@ namespace API.Controllers
             this.context = context;
             this.mapper = mapper;
         }
+ 
+        [HttpPost("login")]
+        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
+        {
+            var user = await this.context.Users.SingleOrDefaultAsync(x => x.userEmail == loginDto.userEmail.ToLower());
+
+            if (user == null) return Unauthorized("Invalid userEmail provided");
+
+            using var hmac = new HMACSHA512(user.passwordSalt);
+
+            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.password));
+
+            for (int i = 0; i < computedHash.Length; i++)
+            {
+                if (computedHash[i] != user.userPasswordHash[i]) return Unauthorized("Invalid password");
+            }
+            
+            return new UserDto
+            {
+                userEmail = user.userEmail,
+                token = this.tokenService.CreateToken(user)
+            };
+        }
 
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
 
-            if (await UserExist(registerDto.userEmail)) return BadRequest("UserEmail is taken");
+            if (await UserExist(registerDto.userEmail)) return BadRequest("UserEmail is already used by another user. Use another email");
             var user=this.mapper.Map<AppUser>(registerDto);
 
             using var hmac = new HMACSHA512();
@@ -49,31 +72,6 @@ namespace API.Controllers
                 token = this.tokenService.CreateToken(user)
             };
         }
-
-        [HttpPost("login")]
-        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
-        {
-            var user = await this.context.Users
-            .SingleOrDefaultAsync(x => x.userEmail == loginDto.userEmail.ToLower());
-
-            if (user == null) return Unauthorized("Invalid userEmail");
-
-            using var hmac = new HMACSHA512(user.passwordSalt);
-
-            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.password));
-
-            for (int i = 0; i < computedHash.Length; i++)
-            {
-                if (computedHash[i] != user.userPasswordHash[i]) return Unauthorized("Invalid password");
-            }
-            
-            return new UserDto
-            {
-                userEmail = user.userEmail,
-                token = this.tokenService.CreateToken(user)
-            };
-        }
-
         private async Task<bool> UserExist(string userEmail)
         {
             return await this.context.Users.AnyAsync(x => x.userEmail == userEmail.ToLower());

@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,18 +6,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./homefrm.component.css']
 })
 export class HomefrmComponent implements OnInit {
-  registerMode=false;
-
+  ifinregister=false;
   constructor() { }
-
   ngOnInit(): void {
   
   }
-  registerToggle(){
-   this.registerMode=!this.registerMode; 
+  registerTrigger(){
+   this.ifinregister=!this.ifinregister; 
   }
 
   cancelRegisterMode(event: boolean){
-this.registerMode=event;
+this.ifinregister=event;
   }
 }

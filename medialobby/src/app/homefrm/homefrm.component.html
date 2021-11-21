@@ -1,13 +1,13 @@
 <div class= "container mt-5">
-    <div *ngIf="!registerMode" style='text-align: center;'>
+    <div *ngIf="!ifinregister" style='text-align: center;'>
         <h1>The MediaLobby, share your journey</h1>
         <p class="lead">Sign up to involve your friends in your journey!</p>
         <div class="text-center">
-        <button (click)="registerToggle()" class="btn btn-primary btn-lg mr-3">Register</button>
+        <button (click)=" registerTrigger()" class="btn btn-primary btn-lg mr-3">Register</button>
         <button class="btn btn-info btn-lg" routerLink="/about">Learn more</button>
         </div>
     </div>
-    <div *ngIf="registerMode" class="container">
+    <div *ngIf="ifinregister" class="container">
         <div class="row justify-content-center">
             <div class="col-4">
               <app-register  (cancelRegister)="cancelRegisterMode($event)"></app-register>

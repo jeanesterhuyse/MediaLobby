@@ -28,7 +28,6 @@ const routes: Routes = [
       
 
     ]
-  
   },
   {path: '**', component: HomefrmComponent, pathMatch: 'full'},  
 ];
