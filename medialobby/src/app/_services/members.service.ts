@@ -49,8 +49,8 @@ updateMember(member: Member){
   })
 }
 
-setMainPhoto(photoId: number){
-return this.http.put(this.baseUrl+'users/set-main-photo/'+photoId,{})
+setProfilePhoto(photoId: number){
+return this.http.put(this.baseUrl+'users/set-profile-photo/'+photoId,{})
 }
 
 UpdatePhoto(photoId: number,folders_id: number){

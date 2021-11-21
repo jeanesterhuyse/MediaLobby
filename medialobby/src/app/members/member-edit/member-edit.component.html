@@ -73,11 +73,11 @@
 
         <tab heading='Download images'>
             <form #edownloadForm="ngForm" id="download" (ngSubmit)="updateMember()">
-        <div class="col-2" *ngFor="let photo of images">
-            <img src="{{photo.url}}" alt="{{photo.url}}" class="img-thumbnail p-1">
-            </div>      
-                <button  (click)="download(photo)" 
-                class="btn btn-sm">Download photo</button>
+                 <div class="col-2" *ngFor="let photo of images">
+                    <img src="{{photo.url}}" alt="{{photo.url}}" class="img-thumbnail p-1">
+                    <button  (click)="download(photo)" 
+                        class="btn btn-sm">Download photo</button>
+                </div>              
             </form>   
         </tab>
                     

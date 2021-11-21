@@ -64,8 +64,8 @@ capturedBy: string;
     console.log("Folder id from event: " + this.selected_folder_id);
   }
 
-  setMainPhoto(photo: Photo){
-  this.memberService.setMainPhoto(photo.id).subscribe(()=>{
+  setProfilePhoto(photo: Photo){
+  this.memberService.setProfilePhoto(photo.id).subscribe(()=>{
   this.user.photoUrl=photo.url;
   this.accountService.setCurrentUser(this.user);
   this.member.photoUrl=photo.url;

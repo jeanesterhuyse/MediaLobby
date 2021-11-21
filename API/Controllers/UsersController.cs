@@ -111,17 +111,16 @@ namespace API.Controllers
             
         } 
 
-        [HttpPut("set-main-photo/{photoId}")]
-        public async Task<ActionResult> SetMainPhoto(int photoId)
+        [HttpPut("set-profile-photo/{photoId}")]
+        public async Task<ActionResult> SetProfilePhoto(int photoId)
         {
             var user = await this.userRepository.GetUserByUserEmailAsync(User.GetUserEmail());
 
             var photo = user.photos.FirstOrDefault(x => x.id == photoId);
 
-            if (photo.isMain) return BadRequest("This picture is already your profile picture");
 
-            var currentMain = user.photos.FirstOrDefault(x => x.isMain);
-            if (currentMain != null) currentMain.isMain = false;
+            var currentProfile = user.photos.FirstOrDefault(x => x.isMain);
+            if (currentProfile != null) currentProfile.isMain = false;
             photo.isMain = true;
 
             if (await this.userRepository.SaveAllAsync()) return Ok();
