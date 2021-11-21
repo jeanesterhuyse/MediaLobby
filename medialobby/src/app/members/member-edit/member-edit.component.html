@@ -59,13 +59,13 @@
                 <button class="btn btn-outline-primary" (click)="updateFolder()" type="submit">Update folder</button>
             </tab>
             <tab heading='Download images'>
-                <form #edownloadForm="ngForm" id="download" (ngSubmit)="updateMember()">
+                <!--<form #edownloadForm="ngForm" id="download" (ngSubmit)="updateMember()">
                      <div class="col-2" *ngFor="let photo of images">
                         <img src="{{photo.url}}" alt="{{photo.url}}" class="img-thumbnail p-1">
                         <button  (click)="download(photo)" 
                             class="btn btn-sm">Download photo</button>
                     </div>              
-                </form>   
+                </form>   -->
             </tab>
             <tab heading='Delete folder'>
                 <form #editForm="ngForm" id="deleteFolder" (ngSubmit)="updateMember()">
